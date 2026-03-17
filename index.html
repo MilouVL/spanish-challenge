@@ -7,439 +7,643 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #f5f0e8;
-      --card: #fffdf8;
-      --ink: #1a1208;
-      --ink2: #6b5c3e;
-      --ink3: #a8956e;
-      --accent: #c8440f;
-      --accent-light: #f5ddd4;
-      --green: #2d6a4f;
-      --green-light: #d8f0e6;
-      --red: #9b1c1c;
-      --red-light: #fde8e8;
-      --border: #e2d9c8;
-      --tag-ar: #e8f0fb; --tag-ar-t: #1a4a8a;
-      --tag-er: #ede8fb; --tag-er-t: #4a2d9b;
-      --tag-ir: #e8f5ee; --tag-ir-t: #1a6640;
-      --tag-irreg: #fdf3e0; --tag-irreg-t: #7a4a0a;
+      --bg: #f5f0e8; --card: #fffdf8; --ink: #1a1208; --ink2: #6b5c3e; --ink3: #a8956e;
+      --accent: #c8440f; --border: #e2d9c8;
+      --tag-ar: #e8f0fb; --tag-ar-t: #1a4a8a; --tag-er: #ede8fb; --tag-er-t: #4a2d9b;
+      --tag-ir: #e8f5ee; --tag-ir-t: #1a6640; --tag-irreg: #fdf3e0; --tag-irreg-t: #7a4a0a;
+      --green: #2d6a4f; --red: #9b1c1c;
     }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem 1rem 4rem;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 2.5rem;
-      animation: fadeDown 0.6s ease both;
-    }
-
-    header h1 {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2rem, 6vw, 3rem);
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: var(--ink);
-      line-height: 1.1;
-    }
-
-    header h1 em {
-      font-style: italic;
-      color: var(--accent);
-    }
-
-    header p {
-      font-size: 0.875rem;
-      color: var(--ink3);
-      margin-top: 0.4rem;
-    }
-
-    .app {
-      width: 100%;
-      max-width: 560px;
-      animation: fadeUp 0.5s ease both 0.1s;
-    }
-
-    .meta-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      font-size: 0.8rem;
-      color: var(--ink3);
-    }
-
-    .streak-badge {
-      background: var(--tag-irreg);
-      color: var(--tag-irreg-t);
-      border-radius: 999px;
-      padding: 3px 12px;
-      font-size: 0.78rem;
-      font-weight: 500;
-    }
-
-    .timer-badge {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 3px 12px;
-      font-size: 0.78rem;
-      font-variant-numeric: tabular-nums;
-      color: var(--ink2);
-    }
-
-    .progress-wrap {
-      height: 4px;
-      background: var(--border);
-      border-radius: 999px;
-      margin-bottom: 1.5rem;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 4px;
-      background: var(--accent);
-      border-radius: 999px;
-      transition: width 0.4s cubic-bezier(.4,0,.2,1);
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    }
-
-    .q-count {
-      font-size: 0.78rem;
-      color: var(--ink3);
-      margin-bottom: 0.75rem;
-    }
-
-    .hint-row {
-      font-size: 0.82rem;
-      color: var(--ink3);
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .hint-row strong {
-      color: var(--ink);
-      font-style: italic;
-      font-weight: 400;
-      font-family: 'Fraunces', serif;
-    }
-
-    .tag {
-      font-size: 0.72rem;
-      padding: 2px 9px;
-      border-radius: 999px;
-      font-weight: 500;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "DM Sans", sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem 4rem; }
+    header { text-align: center; margin-bottom: 2.5rem; animation: fadeDown 0.6s ease both; }
+    header h1 { font-family: "Fraunces", serif; font-size: clamp(2rem, 6vw, 3rem); font-weight: 600; letter-spacing: -0.02em; color: var(--ink); line-height: 1.1; }
+    header h1 em { font-style: italic; color: var(--accent); }
+    header p { font-size: 0.875rem; color: var(--ink3); margin-top: 0.4rem; }
+    .app { width: 100%; max-width: 560px; animation: fadeUp 0.5s ease both 0.1s; }
+    .meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .streak-badge { background: var(--tag-irreg); color: var(--tag-irreg-t); border-radius: 999px; padding: 3px 12px; font-size: 0.78rem; font-weight: 500; }
+    .timer-badge { background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 3px 12px; font-size: 0.78rem; font-variant-numeric: tabular-nums; color: var(--ink2); }
+    .progress-wrap { height: 4px; background: var(--border); border-radius: 999px; margin-bottom: 1.5rem; overflow: hidden; }
+    .progress-fill { height: 4px; background: var(--accent); border-radius: 999px; transition: width 0.4s cubic-bezier(.4,0,.2,1); }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+    .q-count { font-size: 0.78rem; color: var(--ink3); margin-bottom: 0.75rem; }
+    .hint-row { font-size: 0.82rem; color: var(--ink3); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .hint-row strong { color: var(--ink); font-style: italic; font-weight: 400; font-family: "Fraunces", serif; }
+    .tag { font-size: 0.72rem; padding: 2px 9px; border-radius: 999px; font-weight: 500; }
     .tag-ar { background: var(--tag-ar); color: var(--tag-ar-t); }
     .tag-er { background: var(--tag-er); color: var(--tag-er-t); }
     .tag-ir { background: var(--tag-ir); color: var(--tag-ir-t); }
     .tag-irreg { background: var(--tag-irreg); color: var(--tag-irreg-t); }
-
-    .sentence {
-      font-size: 1.15rem;
-      line-height: 2.2;
-      color: var(--ink);
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-
-    .blank {
-      border: none;
-      border-bottom: 2px solid var(--accent);
-      background: transparent;
-      font-size: 1.15rem;
-      font-family: 'DM Sans', sans-serif;
-      color: var(--ink);
-      outline: none;
-      min-width: 90px;
-      text-align: center;
-      padding: 0 4px;
-      transition: border-color 0.2s;
-    }
+    .sentence { font-size: 1.15rem; line-height: 2.2; color: var(--ink); display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+    .blank { border: none; border-bottom: 2px solid var(--accent); background: transparent; font-size: 1.15rem; font-family: "DM Sans", sans-serif; color: var(--ink); outline: none; min-width: 90px; text-align: center; padding: 0 4px; transition: border-color 0.2s; }
     .blank:focus { border-bottom-color: #8b2d06; }
     .blank.correct { border-bottom-color: var(--green); color: var(--green); }
     .blank.wrong { border-bottom-color: var(--red); color: var(--red); }
     .blank:disabled { cursor: default; }
-
-    .feedback {
-      font-size: 0.82rem;
-      margin-top: 0.75rem;
-      min-height: 1.2em;
-      font-weight: 500;
-    }
+    .feedback { font-size: 0.82rem; margin-top: 0.75rem; min-height: 1.2em; font-weight: 500; }
     .feedback.correct { color: var(--green); }
     .feedback.wrong { color: var(--red); }
-
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 1.25rem;
-      flex-wrap: wrap;
-    }
-
-    button {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 500;
-      border-radius: 10px;
-      padding: 10px 20px;
-      cursor: pointer;
-      transition: all 0.15s;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--ink2);
-    }
+    .btn-row { display: flex; gap: 10px; margin-top: 1.25rem; flex-wrap: wrap; }
+    button { font-family: "DM Sans", sans-serif; font-size: 0.9rem; font-weight: 500; border-radius: 10px; padding: 10px 20px; cursor: pointer; transition: all 0.15s; border: 1px solid var(--border); background: var(--card); color: var(--ink2); }
     button:hover { background: var(--bg); }
-    button.primary {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
+    button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
     button.primary:hover { background: #a83509; border-color: #a83509; }
     button:active { transform: scale(0.97); }
-
-    .score-row {
-      font-size: 0.82rem;
-      color: var(--ink3);
-      margin-top: 1rem;
-    }
+    .score-row { font-size: 0.82rem; color: var(--ink3); margin-top: 1rem; }
     .score-row span { font-weight: 500; color: var(--ink); }
-
-    .summary {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    }
+    .summary { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem 1.5rem; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
     .summary .medal { font-size: 3rem; margin-bottom: 0.5rem; }
-    .summary h2 {
-      font-family: 'Fraunces', serif;
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-    .summary .big { font-size: 3rem; font-weight: 600; color: var(--accent); font-family: 'Fraunces', serif; line-height: 1; margin: 0.5rem 0; }
+    .summary h2 { font-family: "Fraunces", serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .summary .big { font-size: 3rem; font-weight: 600; color: var(--accent); font-family: "Fraunces", serif; line-height: 1; margin: 0.5rem 0; }
     .summary .dots { font-size: 1.4rem; margin: 0.75rem 0; letter-spacing: 2px; }
     .summary p { font-size: 0.9rem; color: var(--ink2); margin-bottom: 0.5rem; }
     .summary .time-note { font-size: 0.8rem; color: var(--ink3); margin-bottom: 1.25rem; }
-
-    .done-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    }
-    .done-card h2 { font-family: 'Fraunces', serif; font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .done-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem 1.5rem; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+    .done-card h2 { font-family: "Fraunces", serif; font-size: 1.4rem; margin-bottom: 0.5rem; }
     .done-card p { font-size: 0.9rem; color: var(--ink2); margin-bottom: 0.5rem; }
-    .done-card .big { font-size: 2.5rem; font-weight: 600; color: var(--accent); font-family: 'Fraunces', serif; }
-
+    .done-card .big { font-size: 2.5rem; font-weight: 600; color: var(--accent); font-family: "Fraunces", serif; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
-    .pop { animation: pop 0.3s ease; }
   </style>
 </head>
 <body>
-
 <header>
   <h1>Daily <em>Spanish</em> Challenge</h1>
-  <p>Pretérito indefinido · Mexican Spanish</p>
+  <p>Pretérito indefinido &middot; Mexican Spanish &middot; 500+ sentences</p>
 </header>
-
-<div class="app" id="app">
-  <p style="color:var(--ink3);font-size:0.9rem;">Loading...</p>
-</div>
-
+<div class="app" id="app"><p style="color:var(--ink3);font-size:0.9rem;">Loading...</p></div>
 <script>
 const ALL = [
+  // -AR regular
   { before:"Ayer yo", answer:"compré", after:"chiles en la tianguis.", hint:"comprar (to buy)", tag:"ar" },
   { before:"Mi hermano", answer:"llegó", after:"tarde a la cena.", hint:"llegar (to arrive)", tag:"ar" },
-  { before:"Nosotros", answer:"pudimos", after:"ver el volcán desde aquí.", hint:"poder (to be able to)", tag:"irreg" },
-  { before:"¿Tú", answer:"dormiste", after:"bien anoche?", hint:"dormir (to sleep)", tag:"ir" },
-  { before:"Ellos", answer:"trajeron", after:"pozole a la fiesta.", hint:"traer (to bring)", tag:"irreg" },
   { before:"Yo", answer:"empecé", after:"a estudiar español el año pasado.", hint:"empezar (to start)", tag:"ar" },
-  { before:"Usted", answer:"pidió", after:"enchiladas verdes.", hint:"pedir (to order/ask for)", tag:"ir" },
-  { before:"Mi mamá", answer:"puso", after:"la mesa para el desayuno.", hint:"poner (to put/set)", tag:"irreg" },
   { before:"Nosotros", answer:"caminamos", after:"por el centro histórico toda la tarde.", hint:"caminar (to walk)", tag:"ar" },
-  { before:"Ella", answer:"dijo", after:"que no quería más picante.", hint:"decir (to say/tell)", tag:"irreg" },
   { before:"¿Ustedes", answer:"visitaron", after:"las pirámides de Teotihuacán?", hint:"visitar (to visit)", tag:"ar" },
-  { before:"Yo", answer:"perdí", after:"mi cartera en el metro.", hint:"perder (to lose)", tag:"er" },
-  { before:"Él", answer:"quiso", after:"probar el mole negro.", hint:"querer (to want)", tag:"irreg" },
-  { before:"Los chicos", answer:"corrieron", after:"en el parque esta mañana.", hint:"correr (to run)", tag:"er" },
-  { before:"Tú", answer:"abriste", after:"la ventana porque hacía calor.", hint:"abrir (to open)", tag:"ir" },
   { before:"Mi papá", answer:"manejó", after:"hasta Oaxaca el fin de semana.", hint:"manejar (to drive)", tag:"ar" },
-  { before:"Yo no", answer:"entendí", after:"lo que dijo el vendedor.", hint:"entender (to understand)", tag:"er" },
-  { before:"Ella", answer:"vino", after:"desde Guadalajara para la boda.", hint:"venir (to come)", tag:"irreg" },
   { before:"Nosotros", answer:"escuchamos", after:"música de mariachi en la plaza.", hint:"escuchar (to listen to)", tag:"ar" },
-  { before:"Él", answer:"fue", after:"el mejor estudiante de la clase.", hint:"ser (to be)", tag:"irreg" },
-  { before:"Ayer yo", answer:"me desperté", after:"muy tarde.", hint:"despertarse (to wake up)", tag:"ar" },
   { before:"Mi amiga", answer:"cocinó", after:"chiles rellenos para toda la familia.", hint:"cocinar (to cook)", tag:"ar" },
-  { before:"Nosotros", answer:"conocimos", after:"a unos turistas en el museo.", hint:"conocer (to meet/know)", tag:"er" },
-  { before:"¿Tú", answer:"leíste", after:"el menú antes de pedir?", hint:"leer (to read)", tag:"er" },
-  { before:"Yo", answer:"me sentí", after:"mal después de comer tanto.", hint:"sentirse (to feel)", tag:"ir" },
   { before:"Las chicas", answer:"bailaron", after:"toda la noche en la fiesta.", hint:"bailar (to dance)", tag:"ar" },
-  { before:"Yo", answer:"anduve", after:"por el mercado dos horas.", hint:"andar (to walk/go)", tag:"irreg" },
-  { before:"Mi papá", answer:"rompió", after:"el vaso sin querer.", hint:"romper (to break)", tag:"er" },
+  { before:"Mi papá", answer:"rompió", after:"el vaso sin querer.", hint:"romper (to break)", tag:"ar" },
   { before:"Nosotros", answer:"encontramos", after:"un restaurante increíble en Coyoacán.", hint:"encontrar (to find)", tag:"ar" },
   { before:"El músico", answer:"tocó", after:"la guitarra en el zócalo.", hint:"tocar (to play an instrument)", tag:"ar" },
-  { before:"Mi jefe", answer:"dio", after:"las gracias a todo el equipo.", hint:"dar (to give)", tag:"irreg" },
-  { before:"Ella", answer:"tradujo", after:"el documento al inglés.", hint:"traducir (to translate)", tag:"irreg" },
-  { before:"Ellos", answer:"construyeron", after:"una casa nueva en Puebla.", hint:"construir (to build)", tag:"ir" },
   { before:"Mi hermana", answer:"se graduó", after:"de la universidad en mayo.", hint:"graduarse (to graduate)", tag:"ar" },
-  { before:"¿Tú", answer:"oíste", after:"el temblor anoche?", hint:"oír (to hear)", tag:"irreg" },
-  { before:"Yo", answer:"estuve", after:"enfermo dos días la semana pasada.", hint:"estar (to be)", tag:"irreg" },
   { before:"El chef", answer:"preparó", after:"un mole especial para la boda.", hint:"preparar (to prepare)", tag:"ar" },
-  { before:"Tú", answer:"aprendiste", after:"tres palabras nuevas ayer.", hint:"aprender (to learn)", tag:"er" },
-  { before:"Ella", answer:"mintió", after:"sobre su edad.", hint:"mentir (to lie)", tag:"ir" },
-  { before:"Yo", answer:"seguí", after:"las instrucciones del mapa.", hint:"seguir (to follow)", tag:"ir" },
-  { before:"Mis abuelos", answer:"vivieron", after:"en Veracruz por veinte años.", hint:"vivir (to live)", tag:"ir" },
-  { before:"Tú", answer:"te reíste", after:"mucho con el chiste.", hint:"reírse (to laugh)", tag:"ir" },
-  { before:"Yo", answer:"me caí", after:"en las escaleras del metro.", hint:"caerse (to fall)", tag:"er" },
-  { before:"Nosotros", answer:"resolvimos", after:"el problema juntos.", hint:"resolver (to solve)", tag:"er" },
-  { before:"Nosotros", answer:"subimos", after:"al cerro para ver la ciudad.", hint:"subir (to go up/climb)", tag:"ir" },
-  { before:"Yo", answer:"supuse", after:"que llegarías tarde.", hint:"suponer (to suppose)", tag:"irreg" },
-  { before:"Usted", answer:"recibió", after:"un regalo muy bonito.", hint:"recibir (to receive)", tag:"ir" },
-  { before:"Él", answer:"condujo", after:"por la autopista tres horas.", hint:"conducir (to drive)", tag:"irreg" },
-  { before:"¿Tú", answer:"te probaste", after:"los zapatos antes de comprarlos?", hint:"probarse (to try on)", tag:"ar" },
-  { before:"Yo", answer:"tuve", after:"que trabajar el sábado.", hint:"tener (to have/must)", tag:"irreg" },
-  { before:"Ustedes", answer:"bebieron", after:"horchata en el restaurante.", hint:"beber (to drink)", tag:"er" },
-  { before:"Mi abuela", answer:"hizo", after:"tamales para la fiesta.", hint:"hacer (to make/do)", tag:"irreg" },
-  { before:"Ayer nosotros", answer:"salimos", after:"de casa muy temprano.", hint:"salir (to leave)", tag:"irreg" },
-  { before:"Él", answer:"escribió", after:"un mensaje a su amigo.", hint:"escribir (to write)", tag:"ir" },
-  { before:"Yo", answer:"fui", after:"al mercado esta mañana.", hint:"ir (to go)", tag:"irreg" },
-  { before:"Tú", answer:"viste", after:"la película anoche, ¿verdad?", hint:"ver (to see/watch)", tag:"irreg" },
   { before:"Ellos", answer:"jugaron", after:"fútbol en la calle.", hint:"jugar (to play)", tag:"ar" },
   { before:"La señora", answer:"pagó", after:"la cuenta con efectivo.", hint:"pagar (to pay)", tag:"ar" },
   { before:"Yo", answer:"olvidé", after:"mi paraguas en el camión.", hint:"olvidar (to forget)", tag:"ar" },
-  { before:"Nosotros", answer:"comimos", after:"birria en Tlaquepaque.", hint:"comer (to eat)", tag:"er" },
   { before:"Él", answer:"calentó", after:"las tortillas en el comal.", hint:"calentar (to heat up)", tag:"ar" },
+  { before:"¿Tú", answer:"te probaste", after:"los zapatos antes de comprarlos?", hint:"probarse (to try on)", tag:"ar" },
+  { before:"Ayer yo", answer:"me desperté", after:"muy tarde.", hint:"despertarse (to wake up)", tag:"ar" },
+  { before:"Nosotros", answer:"encontramos", after:"las llaves debajo del sofá.", hint:"encontrar (to find)", tag:"ar" },
+  { before:"Ella", answer:"llegó", after:"al aeropuerto una hora antes.", hint:"llegar (to arrive)", tag:"ar" },
+  { before:"Yo", answer:"llamé", after:"a mi abuela el domingo.", hint:"llamar (to call)", tag:"ar" },
+  { before:"Tú", answer:"trabajaste", after:"toda la semana sin descansar.", hint:"trabajar (to work)", tag:"ar" },
+  { before:"Nosotros", answer:"viajamos", after:"a Cancún en semana santa.", hint:"viajar (to travel)", tag:"ar" },
+  { before:"Él", answer:"firmó", after:"el contrato esta mañana.", hint:"firmar (to sign)", tag:"ar" },
+  { before:"Yo", answer:"limpié", after:"toda la casa antes de la visita.", hint:"limpiar (to clean)", tag:"ar" },
+  { before:"Ella", answer:"cantó", after:"en la posada del barrio.", hint:"cantar (to sing)", tag:"ar" },
+  { before:"Tú", answer:"esperaste", after:"dos horas en el consultorio.", hint:"esperar (to wait)", tag:"ar" },
+  { before:"Mi mamá", answer:"cocinó", after:"pozole rojo para el 15 de septiembre.", hint:"cocinar (to cook)", tag:"ar" },
+  { before:"Yo", answer:"nadé", after:"en el mar toda la mañana.", hint:"nadar (to swim)", tag:"ar" },
+  { before:"Nosotros", answer:"platicamos", after:"horas en el café de Tlalpan.", hint:"platicar (to chat)", tag:"ar" },
+  { before:"Él", answer:"regresó", after:"de Monterrey el lunes pasado.", hint:"regresar (to return)", tag:"ar" },
+  { before:"Tú", answer:"grabaste", after:"un video en el mercado.", hint:"grabar (to record)", tag:"ar" },
+  { before:"Ella", answer:"decoró", after:"el altar de muertos con cempasúchil.", hint:"decorar (to decorate)", tag:"ar" },
+  { before:"Yo", answer:"guardé", after:"los documentos en la caja fuerte.", hint:"guardar (to keep/save)", tag:"ar" },
+  { before:"Nosotros", answer:"celebramos", after:"el cumpleaños en el jardín.", hint:"celebrar (to celebrate)", tag:"ar" },
+  { before:"Él", answer:"arregló", after:"la llave del baño que goteaba.", hint:"arreglar (to fix)", tag:"ar" },
+  { before:"Yo", answer:"apagué", after:"las luces antes de salir.", hint:"apagar (to turn off)", tag:"ar" },
+  { before:"Tú", answer:"enviaste", after:"el correo equivocado.", hint:"enviar (to send)", tag:"ar" },
+  { before:"Mi papá", answer:"plantó", after:"un árbol de aguacate en el patio.", hint:"plantar (to plant)", tag:"ar" },
+  { before:"Ella", answer:"pintó", after:"las paredes de la sala de amarillo.", hint:"pintar (to paint)", tag:"ar" },
+  { before:"Nosotros", answer:"descansamos", after:"en la hamaca toda la tarde.", hint:"descansar (to rest)", tag:"ar" },
+  { before:"Yo", answer:"presenté", after:"mi proyecto al director.", hint:"presentar (to present)", tag:"ar" },
+  { before:"Él", answer:"cortó", after:"el pastel en doce rebanadas.", hint:"cortar (to cut)", tag:"ar" },
+  { before:"Tú", answer:"sacaste", after:"fotos muy bonitas en Guanajuato.", hint:"sacar (to take out/photos)", tag:"ar" },
+  { before:"Ella", answer:"dobló", after:"la ropa recién lavada.", hint:"doblar (to fold)", tag:"ar" },
+  { before:"Yo", answer:"pregunté", after:"el precio en el puesto del mercado.", hint:"preguntar (to ask)", tag:"ar" },
+  { before:"Nosotros", answer:"rezamos", after:"en la iglesia antes del desayuno.", hint:"rezar (to pray)", tag:"ar" },
+  { before:"Él", answer:"estacionó", after:"el coche frente al mercado.", hint:"estacionar (to park)", tag:"ar" },
+  { before:"Tú", answer:"lavaste", after:"los trastes después de cenar.", hint:"lavar (to wash)", tag:"ar" },
+  { before:"Ella", answer:"besó", after:"a su bebé en la frente.", hint:"besar (to kiss)", tag:"ar" },
+  { before:"Yo", answer:"ahorré", after:"para comprar una bicicleta nueva.", hint:"ahorrar (to save money)", tag:"ar" },
+  { before:"Nosotros", answer:"cruzamos", after:"la frontera sin ningún problema.", hint:"cruzar (to cross)", tag:"ar" },
+  { before:"Él", answer:"tocó", after:"la puerta tres veces antes de entrar.", hint:"tocar (to knock)", tag:"ar" },
+  { before:"Tú", answer:"terminaste", after:"la tarea justo a tiempo.", hint:"terminar (to finish)", tag:"ar" },
+  { before:"Ella", answer:"abrazó", after:"a su mamá en el aeropuerto.", hint:"abrazar (to hug)", tag:"ar" },
+  { before:"Yo", answer:"manejé", after:"seis horas sin parar.", hint:"manejar (to drive)", tag:"ar" },
+  { before:"Nosotros", answer:"bailamos", after:"salsa en la terraza del hotel.", hint:"bailar (to dance)", tag:"ar" },
+  { before:"Él", answer:"gritó", after:"de emoción cuando ganó el equipo.", hint:"gritar (to shout)", tag:"ar" },
+  { before:"Tú", answer:"ordenaste", after:"tacos de canasta en la esquina.", hint:"ordenar (to order)", tag:"ar" },
+  { before:"Mi abuela", answer:"tejió", after:"una cobija de lana para el invierno.", hint:"tejer (to knit/weave)", tag:"ar" },
+  { before:"Yo", answer:"toqué", after:"la guitarra en la fogata.", hint:"tocar (to play music)", tag:"ar" },
+  { before:"Ella", answer:"marcó", after:"el número equivocado.", hint:"marcar (to dial/mark)", tag:"ar" },
+  { before:"Nosotros", answer:"visitamos", after:"el museo de antropología el sábado.", hint:"visitar (to visit)", tag:"ar" },
+  { before:"Él", answer:"entrenó", after:"dos horas en el gimnasio.", hint:"entrenar (to train)", tag:"ar" },
+  { before:"Yo", answer:"compré", after:"un sombrero en el mercado de artesanías.", hint:"comprar (to buy)", tag:"ar" },
+  { before:"Tú", answer:"dibujaste", after:"un mapa para que no me perdiera.", hint:"dibujar (to draw)", tag:"ar" },
+  { before:"Ella", answer:"renunció", after:"a su trabajo ayer.", hint:"renunciar (to resign)", tag:"ar" },
+  { before:"Nosotros", answer:"nadamos", after:"en el cenote toda la mañana.", hint:"nadar (to swim)", tag:"ar" },
+  { before:"Él", answer:"ganó", after:"el primer lugar en el concurso.", hint:"ganar (to win/earn)", tag:"ar" },
+  { before:"Yo", answer:"dejé", after:"las llaves en la oficina.", hint:"dejar (to leave behind)", tag:"ar" },
+  { before:"Tú", answer:"cambiaste", after:"el canal sin pedir permiso.", hint:"cambiar (to change)", tag:"ar" },
+  { before:"Ella", answer:"planchó", after:"la ropa la noche anterior.", hint:"planchar (to iron)", tag:"ar" },
+  { before:"Nosotros", answer:"jugamos", after:"lotería en la noche de navidad.", hint:"jugar (to play)", tag:"ar" },
+  { before:"Él", answer:"donó", after:"ropa al albergue de la colonia.", hint:"donar (to donate)", tag:"ar" },
+  { before:"Yo", answer:"expliqué", after:"el problema al mecánico.", hint:"explicar (to explain)", tag:"ar" },
+  { before:"Tú", answer:"llegaste", after:"justo cuando íbamos a comer.", hint:"llegar (to arrive)", tag:"ar" },
+  { before:"Ella", answer:"compró", after:"flores para el altar.", hint:"comprar (to buy)", tag:"ar" },
+  { before:"Nosotros", answer:"pasamos", after:"el fin de semana en Tepoztlán.", hint:"pasar (to spend time)", tag:"ar" },
+  { before:"Él", answer:"apuntó", after:"la dirección en su cuaderno.", hint:"apuntar (to note down)", tag:"ar" },
+  { before:"Yo", answer:"escuché", after:"las noticias en la radio.", hint:"escuchar (to listen)", tag:"ar" },
+
+  // -ER regular
+  { before:"Yo", answer:"perdí", after:"mi cartera en el metro.", hint:"perder (to lose)", tag:"er" },
+  { before:"Los chicos", answer:"corrieron", after:"en el parque esta mañana.", hint:"correr (to run)", tag:"er" },
+  { before:"Yo no", answer:"entendí", after:"lo que dijo el vendedor.", hint:"entender (to understand)", tag:"er" },
+  { before:"Nosotros", answer:"comimos", after:"birria en Tlaquepaque.", hint:"comer (to eat)", tag:"er" },
+  { before:"Tú", answer:"aprendiste", after:"tres palabras nuevas ayer.", hint:"aprender (to learn)", tag:"er" },
+  { before:"Yo", answer:"me caí", after:"en las escaleras del metro.", hint:"caerse (to fall)", tag:"er" },
+  { before:"Nosotros", answer:"resolvimos", after:"el problema juntos.", hint:"resolver (to solve)", tag:"er" },
+  { before:"Ustedes", answer:"bebieron", after:"horchata en el restaurante.", hint:"beber (to drink)", tag:"er" },
+  { before:"¿Tú", answer:"leíste", after:"el menú antes de pedir?", hint:"leer (to read)", tag:"er" },
+  { before:"Nosotros", answer:"conocimos", after:"a unos turistas en el museo.", hint:"conocer (to meet/know)", tag:"er" },
+  { before:"Ella", answer:"vendió", after:"sus artesanías en el tianguis.", hint:"vender (to sell)", tag:"er" },
+  { before:"Yo", answer:"prometí", after:"llamar todos los días.", hint:"prometer (to promise)", tag:"er" },
+  { before:"Él", answer:"metió", after:"el dinero en el cajero automático.", hint:"meter (to put in)", tag:"er" },
+  { before:"Tú", answer:"bebiste", after:"demasiado café esta mañana.", hint:"beber (to drink)", tag:"er" },
+  { before:"Ella", answer:"escondió", after:"los regalos debajo de la cama.", hint:"esconder (to hide)", tag:"er" },
+  { before:"Nosotros", answer:"recogimos", after:"a los niños de la escuela.", hint:"recoger (to pick up)", tag:"er" },
+  { before:"Yo", answer:"leí", after:"el libro en dos días.", hint:"leer (to read)", tag:"er" },
+  { before:"Él", answer:"rompió", after:"su promesa otra vez.", hint:"romper (to break)", tag:"er" },
+  { before:"Tú", answer:"comiste", after:"tres tamales sin parar.", hint:"comer (to eat)", tag:"er" },
+  { before:"Ella", answer:"corrió", after:"diez kilómetros antes del desayuno.", hint:"correr (to run)", tag:"er" },
+  { before:"Nosotros", answer:"temimos", after:"que llegara tarde el vuelo.", hint:"temer (to fear)", tag:"er" },
+  { before:"Yo", answer:"devolví", after:"el libro a la biblioteca.", hint:"devolver (to return)", tag:"er" },
+  { before:"Él", answer:"aprendió", after:"a tocar el bajo en seis meses.", hint:"aprender (to learn)", tag:"er" },
+  { before:"Tú", answer:"cediste", after:"el asiento a la señora mayor.", hint:"ceder (to give up/yield)", tag:"er" },
+  { before:"Ella", answer:"mordió", after:"el chile sin saber que era habanero.", hint:"morder (to bite)", tag:"er" },
+  { before:"Yo", answer:"encendí", after:"las velas de la cena.", hint:"encender (to light/turn on)", tag:"er" },
+  { before:"Nosotros", answer:"discutimos", after:"el plan en la reunión.", hint:"discutir (to discuss)", tag:"er" },
+  { before:"Él", answer:"sorprendió", after:"a su novia con serenata.", hint:"sorprender (to surprise)", tag:"er" },
+  { before:"Tú", answer:"obtuviste", after:"el mejor resultado del grupo.", hint:"obtener (to obtain)", tag:"er" },
+  { before:"Ella", answer:"respondió", after:"el correo en menos de un minuto.", hint:"responder (to respond)", tag:"er" },
+  { before:"Yo", answer:"comprendí", after:"la lección después de practicar.", hint:"comprender (to understand)", tag:"er" },
+  { before:"Nosotros", answer:"bebimos", after:"atole en el puesto de la esquina.", hint:"beber (to drink)", tag:"er" },
+  { before:"Él", answer:"perdió", after:"el autobús por dos minutos.", hint:"perder (to miss/lose)", tag:"er" },
+  { before:"Tú", answer:"leíste", after:"las instrucciones antes de armar el mueble.", hint:"leer (to read)", tag:"er" },
+
+  // -IR regular
+  { before:"¿Tú", answer:"dormiste", after:"bien anoche?", hint:"dormir (to sleep)", tag:"ir" },
+  { before:"Usted", answer:"pidió", after:"enchiladas verdes.", hint:"pedir (to order/ask for)", tag:"ir" },
+  { before:"Tú", answer:"abriste", after:"la ventana porque hacía calor.", hint:"abrir (to open)", tag:"ir" },
+  { before:"Ellos", answer:"construyeron", after:"una casa nueva en Puebla.", hint:"construir (to build)", tag:"ir" },
+  { before:"Yo", answer:"me sentí", after:"mal después de comer tanto.", hint:"sentirse (to feel)", tag:"ir" },
+  { before:"Mis abuelos", answer:"vivieron", after:"en Veracruz por veinte años.", hint:"vivir (to live)", tag:"ir" },
+  { before:"Tú", answer:"te reíste", after:"mucho con el chiste.", hint:"reírse (to laugh)", tag:"ir" },
+  { before:"Nosotros", answer:"subimos", after:"al cerro para ver la ciudad.", hint:"subir (to go up/climb)", tag:"ir" },
+  { before:"Yo", answer:"seguí", after:"las instrucciones del mapa.", hint:"seguir (to follow)", tag:"ir" },
+  { before:"Ella", answer:"mintió", after:"sobre su edad.", hint:"mentir (to lie)", tag:"ir" },
+  { before:"Usted", answer:"recibió", after:"un regalo muy bonito.", hint:"recibir (to receive)", tag:"ir" },
+  { before:"Él", answer:"escribió", after:"un mensaje a su amigo.", hint:"escribir (to write)", tag:"ir" },
+  { before:"Yo", answer:"dormí", after:"diez horas después del viaje.", hint:"dormir (to sleep)", tag:"ir" },
+  { before:"Tú", answer:"subiste", after:"las escaleras corriendo.", hint:"subir (to go up)", tag:"ir" },
+  { before:"Ella", answer:"abrió", after:"su propio negocio el año pasado.", hint:"abrir (to open)", tag:"ir" },
+  { before:"Nosotros", answer:"vivimos", after:"en Mérida tres años.", hint:"vivir (to live)", tag:"ir" },
+  { before:"Yo", answer:"pedí", after:"un agua de Jamaica.", hint:"pedir (to ask for/order)", tag:"ir" },
+  { before:"Él", answer:"sufrió", after:"mucho con el calor de Hermosillo.", hint:"sufrir (to suffer)", tag:"ir" },
+  { before:"Tú", answer:"escribiste", after:"una carta a mano.", hint:"escribir (to write)", tag:"ir" },
+  { before:"Ella", answer:"compartió", after:"su comida con todos.", hint:"compartir (to share)", tag:"ir" },
+  { before:"Nosotros", answer:"decidimos", after:"quedarnos un día más en Puerto Vallarta.", hint:"decidir (to decide)", tag:"ir" },
+  { before:"Yo", answer:"añadí", after:"más cilantro a los tacos.", hint:"añadir (to add)", tag:"ir" },
+  { before:"Él", answer:"admitió", after:"que se había equivocado.", hint:"admitir (to admit)", tag:"ir" },
+  { before:"Tú", answer:"insististe", after:"en pagar la cena.", hint:"insistir (to insist)", tag:"ir" },
+  { before:"Ella", answer:"se vistió", after:"de charra para la fiesta.", hint:"vestirse (to dress)", tag:"ir" },
+  { before:"Nosotros", answer:"discutimos", after:"si ir a la playa o a las ruinas.", hint:"discutir (to discuss)", tag:"ir" },
+  { before:"Yo", answer:"recibí", after:"una llamada de mi tía en Jalisco.", hint:"recibir (to receive)", tag:"ir" },
+  { before:"Él", answer:"consistió", after:"en dos días de conferencias.", hint:"consistir (to consist)", tag:"ir" },
+  { before:"Tú", answer:"cumpliste", after:"con tu promesa esta vez.", hint:"cumplir (to fulfill)", tag:"ir" },
+  { before:"Ella", answer:"asistió", after:"a la conferencia de negocios.", hint:"asistir (to attend)", tag:"ir" },
+  { before:"Nosotros", answer:"permitimos", after:"que los niños se quedaran.", hint:"permitir (to allow)", tag:"ir" },
+  { before:"Yo", answer:"exhibí", after:"mis fotos en la galería del barrio.", hint:"exhibir (to exhibit)", tag:"ir" },
+  { before:"Él", answer:"partió", after:"el pan para compartir con todos.", hint:"partir (to split/leave)", tag:"ir" },
+  { before:"Tú", answer:"discutiste", after:"el precio con el vendedor.", hint:"discutir (to argue/discuss)", tag:"ir" },
+
+  // IRREGULAR
+  { before:"Nosotros", answer:"pudimos", after:"ver el volcán desde aquí.", hint:"poder (to be able to)", tag:"irreg" },
+  { before:"Ellos", answer:"trajeron", after:"pozole a la fiesta.", hint:"traer (to bring)", tag:"irreg" },
+  { before:"Mi mamá", answer:"puso", after:"la mesa para el desayuno.", hint:"poner (to put/set)", tag:"irreg" },
+  { before:"Ella", answer:"dijo", after:"que no quería más picante.", hint:"decir (to say/tell)", tag:"irreg" },
+  { before:"Él", answer:"quiso", after:"probar el mole negro.", hint:"querer (to want)", tag:"irreg" },
+  { before:"Ella", answer:"vino", after:"desde Guadalajara para la boda.", hint:"venir (to come)", tag:"irreg" },
+  { before:"Él", answer:"fue", after:"el mejor estudiante de la clase.", hint:"ser (to be)", tag:"irreg" },
+  { before:"Yo", answer:"anduve", after:"por el mercado dos horas.", hint:"andar (to walk/go)", tag:"irreg" },
+  { before:"Mi jefe", answer:"dio", after:"las gracias a todo el equipo.", hint:"dar (to give)", tag:"irreg" },
+  { before:"Ella", answer:"tradujo", after:"el documento al inglés.", hint:"traducir (to translate)", tag:"irreg" },
+  { before:"¿Tú", answer:"oíste", after:"el temblor anoche?", hint:"oír (to hear)", tag:"irreg" },
+  { before:"Yo", answer:"estuve", after:"enfermo dos días la semana pasada.", hint:"estar (to be)", tag:"irreg" },
+  { before:"Yo", answer:"tuve", after:"que trabajar el sábado.", hint:"tener (to have/must)", tag:"irreg" },
+  { before:"Mi abuela", answer:"hizo", after:"tamales para la fiesta.", hint:"hacer (to make/do)", tag:"irreg" },
+  { before:"Ayer nosotros", answer:"salimos", after:"de casa muy temprano.", hint:"salir (to leave)", tag:"irreg" },
+  { before:"Yo", answer:"fui", after:"al mercado esta mañana.", hint:"ir (to go)", tag:"irreg" },
+  { before:"Tú", answer:"viste", after:"la película anoche, ¿verdad?", hint:"ver (to see/watch)", tag:"irreg" },
+  { before:"Nosotros", answer:"fuimos", after:"al zócalo el domingo.", hint:"ir (to go)", tag:"irreg" },
+  { before:"Él", answer:"condujo", after:"por la autopista tres horas.", hint:"conducir (to drive)", tag:"irreg" },
+  { before:"Yo", answer:"supuse", after:"que llegarías tarde.", hint:"suponer (to suppose)", tag:"irreg" },
+  { before:"Yo", answer:"seguí", after:"al guía turístico por todo el museo.", hint:"seguir (to follow)", tag:"irreg" },
+  { before:"Él", answer:"produjo", after:"el mejor mezcal de la región.", hint:"producir (to produce)", tag:"irreg" },
+  { before:"Nosotros", answer:"tuvimos", after:"que cancelar el viaje por el clima.", hint:"tener (to have)", tag:"irreg" },
+  { before:"Tú", answer:"dijiste", after:"la verdad por fin.", hint:"decir (to say)", tag:"irreg" },
+  { before:"Ella", answer:"hizo", after:"una piñata enorme para la posada.", hint:"hacer (to make)", tag:"irreg" },
+  { before:"Yo", answer:"vine", after:"en metro desde Tlatelolco.", hint:"venir (to come)", tag:"irreg" },
+  { before:"Él", answer:"pudo", after:"terminar el proyecto a tiempo.", hint:"poder (to be able to)", tag:"irreg" },
+  { before:"Nosotros", answer:"dimos", after:"una propina generosa.", hint:"dar (to give)", tag:"irreg" },
+  { before:"Tú", answer:"pusiste", after:"demasiada sal en la sopa.", hint:"poner (to put)", tag:"irreg" },
+  { before:"Ella", answer:"quiso", after:"aprender a hacer tortillas a mano.", hint:"querer (to want)", tag:"irreg" },
+  { before:"Yo", answer:"traje", after:"elotes del mercado.", hint:"traer (to bring)", tag:"irreg" },
+  { before:"Él", answer:"supo", after:"la noticia por WhatsApp.", hint:"saber (to find out)", tag:"irreg" },
+  { before:"Nosotros", answer:"estuvimos", after:"en Taxco todo el fin de semana.", hint:"estar (to be)", tag:"irreg" },
+  { before:"Tú", answer:"trajiste", after:"las cervezas para la carnita asada.", hint:"traer (to bring)", tag:"irreg" },
+  { before:"Ella", answer:"fue", after:"la primera de su familia en ir a la universidad.", hint:"ser (to be)", tag:"irreg" },
+  { before:"Yo", answer:"puse", after:"la música antes de que llegaran.", hint:"poner (to put on)", tag:"irreg" },
+  { before:"Él", answer:"vino", after:"a pie desde su casa.", hint:"venir (to come)", tag:"irreg" },
+  { before:"Nosotros", answer:"pudimos", after:"conseguir boletos de última hora.", hint:"poder (to be able to)", tag:"irreg" },
+  { before:"Tú", answer:"anduviste", after:"solo por el barrio sin perderte.", hint:"andar (to walk)", tag:"irreg" },
+  { before:"Ella", answer:"dijo", after:"que volvería antes de las diez.", hint:"decir (to say)", tag:"irreg" },
+  { before:"Yo", answer:"hice", after:"la tarea en el café.", hint:"hacer (to do)", tag:"irreg" },
+  { before:"Él", answer:"tuvo", after:"un accidente menor en el estacionamiento.", hint:"tener (to have)", tag:"irreg" },
+  { before:"Nosotros", answer:"salimos", after:"corriendo cuando empezó la lluvia.", hint:"salir (to leave)", tag:"irreg" },
+  { before:"Tú", answer:"fuiste", after:"el primero en llegar.", hint:"ser/ir (to be/go)", tag:"irreg" },
+  { before:"Ella", answer:"pudo", after:"hablar con el médico ese día.", hint:"poder (to be able to)", tag:"irreg" },
+  { before:"Yo", answer:"di", after:"mi número de teléfono al taxista.", hint:"dar (to give)", tag:"irreg" },
+  { before:"Él", answer:"obtuvo", after:"su visa sin ningún problema.", hint:"obtener (to obtain)", tag:"irreg" },
+  { before:"Nosotros", answer:"dijimos", after:"adiós desde el aeropuerto.", hint:"decir (to say)", tag:"irreg" },
+  { before:"Tú", answer:"estuviste", after:"muy cerca de ganar.", hint:"estar (to be)", tag:"irreg" },
+  { before:"Ella", answer:"trajo", after:"pozole de su pueblo natal.", hint:"traer (to bring)", tag:"irreg" },
+  { before:"Yo", answer:"supe", after:"que era verdad cuando la vi.", hint:"saber (to find out)", tag:"irreg" },
+  { before:"Él", answer:"condujo", after:"de noche por la sierra.", hint:"conducir (to drive)", tag:"irreg" },
+  { before:"Nosotros", answer:"hicimos", after:"un recorrido por el centro.", hint:"hacer (to do)", tag:"irreg" },
+  { before:"Tú", answer:"quisiste", after:"probar el chapulín pero no pudiste.", hint:"querer (to want)", tag:"irreg" },
+  { before:"Ella", answer:"vio", after:"un colibrí en el jardín.", hint:"ver (to see)", tag:"irreg" },
+  { before:"Yo", answer:"oí", after:"tambores desde el otro lado del cerro.", hint:"oír (to hear)", tag:"irreg" },
+  { before:"Él", answer:"redujo", after:"los precios para atraer más clientes.", hint:"reducir (to reduce)", tag:"irreg" },
+  { before:"Nosotros", answer:"vinimos", after:"desde Querétaro en autobús.", hint:"venir (to come)", tag:"irreg" },
+  { before:"Tú", answer:"hiciste", after:"la mejor quesadilla que he probado.", hint:"hacer (to make)", tag:"irreg" },
+  { before:"Ella", answer:"supo", after:"cocinar mole desde los doce años.", hint:"saber (to know how)", tag:"irreg" },
+  { before:"Yo", answer:"anduve", after:"perdido media hora en el tianguis.", hint:"andar (to wander)", tag:"irreg" },
+
+  // More -AR
+  { before:"Yo", answer:"practiqué", after:"español con el señor del taco.", hint:"practicar (to practice)", tag:"ar" },
+  { before:"Tú", answer:"usaste", after:"el metro por primera vez.", hint:"usar (to use)", tag:"ar" },
+  { before:"Ella", answer:"montó", after:"a caballo en el rancho.", hint:"montar (to ride)", tag:"ar" },
+  { before:"Nosotros", answer:"aprovechamos", after:"el descuento en el supermercado.", hint:"aprovechar (to take advantage of)", tag:"ar" },
+  { before:"Él", answer:"madrugó", after:"para llegar al tianguis primero.", hint:"madrugar (to wake up early)", tag:"ar" },
+  { before:"Yo", answer:"revisé", after:"el correo antes de dormir.", hint:"revisar (to check)", tag:"ar" },
+  { before:"Tú", answer:"desayunaste", after:"chilaquiles en el mercado.", hint:"desayunar (to have breakfast)", tag:"ar" },
+  { before:"Ella", answer:"prestó", after:"su paraguas a la vecina.", hint:"prestar (to lend)", tag:"ar" },
+  { before:"Nosotros", answer:"probamos", after:"el pulque por primera vez.", hint:"probar (to try/taste)", tag:"ar" },
+  { before:"Él", answer:"cargó", after:"las bolsas del mandado.", hint:"cargar (to carry)", tag:"ar" },
+  { before:"Yo", answer:"intenté", after:"hablar sin acento.", hint:"intentar (to try/attempt)", tag:"ar" },
+  { before:"Tú", answer:"ayudaste", after:"a tu mamá a cargar las bolsas.", hint:"ayudar (to help)", tag:"ar" },
+  { before:"Ella", answer:"enseñó", after:"a sus hijos a hacer tortillas.", hint:"enseñar (to teach)", tag:"ar" },
+  { before:"Nosotros", answer:"nos levantamos", after:"al amanecer para ver el eclipse.", hint:"levantarse (to get up)", tag:"ar" },
+  { before:"Él", answer:"regañó", after:"al niño por romper el vidrio.", hint:"regañar (to scold)", tag:"ar" },
+  { before:"Yo", answer:"cené", after:"tacos de suadero en la noche.", hint:"cenar (to have dinner)", tag:"ar" },
+  { before:"Tú", answer:"te duchaste", after:"con agua fría porque no había gas.", hint:"ducharse (to shower)", tag:"ar" },
+  { before:"Ella", answer:"organizó", after:"una posada en su casa.", hint:"organizar (to organize)", tag:"ar" },
+  { before:"Nosotros", answer:"recogimos", after:"basura en el parque el domingo.", hint:"recoger (to pick up)", tag:"ar" },
+  { before:"Él", answer:"platicó", after:"con el vendedor sobre el precio.", hint:"platicar (to chat)", tag:"ar" },
+  { before:"Yo", answer:"llegué", after:"tarde por el tráfico en el periférico.", hint:"llegar (to arrive)", tag:"ar" },
+  { before:"Tú", answer:"te bañaste", after:"en el río cerca del pueblo.", hint:"bañarse (to bathe)", tag:"ar" },
+  { before:"Ella", answer:"compró", after:"un rebozo en Tenancingo.", hint:"comprar (to buy)", tag:"ar" },
+  { before:"Nosotros", answer:"acampamos", after:"en el bosque de Tlalpujahua.", hint:"acampar (to camp)", tag:"ar" },
+  { before:"Él", answer:"vendió", after:"su moto para pagar la universidad.", hint:"vender (to sell)", tag:"ar" },
+  { before:"Yo", answer:"me senté", after:"a esperar en la plaza.", hint:"sentarse (to sit down)", tag:"ar" },
+  { before:"Tú", answer:"te quedaste", after:"dormido en el camión.", hint:"quedarse (to stay/fall)", tag:"ar" },
+  { before:"Ella", answer:"mandó", after:"un paquete a su familia en Oaxaca.", hint:"mandar (to send)", tag:"ar" },
+  { before:"Nosotros", answer:"paramos", after:"en una fonda a comer.", hint:"parar (to stop)", tag:"ar" },
+  { before:"Él", answer:"apostó", after:"en la lotería nacional.", hint:"apostar (to bet)", tag:"ar" },
+  { before:"Yo", answer:"rechacé", after:"la oferta porque era muy baja.", hint:"rechazar (to reject)", tag:"ar" },
+  { before:"Tú", answer:"extrañaste", after:"la comida de tu mamá en el viaje.", hint:"extrañar (to miss)", tag:"ar" },
+  { before:"Ella", answer:"alquiló", after:"un departamento en la Condesa.", hint:"alquilar (to rent)", tag:"ar" },
+  { before:"Nosotros", answer:"manejamos", after:"de noche para evitar el tráfico.", hint:"manejar (to drive)", tag:"ar" },
+  { before:"Él", answer:"se despertó", after:"con el ruido de los cohetes.", hint:"despertarse (to wake up)", tag:"ar" },
+  { before:"Yo", answer:"me peiné", after:"antes de salir a la fiesta.", hint:"peinarse (to comb hair)", tag:"ar" },
+  { before:"Tú", answer:"acompañaste", after:"a tu abuela al médico.", hint:"acompañar (to accompany)", tag:"ar" },
+  { before:"Ella", answer:"se maquilló", after:"para la quinceañera de su prima.", hint:"maquillarse (to put on makeup)", tag:"ar" },
+  { before:"Nosotros", answer:"disfrutamos", after:"del concierto en el Zócalo.", hint:"disfrutar (to enjoy)", tag:"ar" },
+  { before:"Él", answer:"cargó", after:"con todo el equipo él solo.", hint:"cargar (to carry)", tag:"ar" },
+  { before:"Yo", answer:"me preocupé", after:"cuando no llegaste a tiempo.", hint:"preocuparse (to worry)", tag:"ar" },
+  { before:"Tú", answer:"te enojaste", after:"porque llegamos tarde.", hint:"enojarse (to get angry)", tag:"ar" },
+  { before:"Ella", answer:"se animó", after:"a cantar en el karaoke.", hint:"animarse (to cheer up/dare)", tag:"ar" },
+  { before:"Nosotros", answer:"nos aburrimos", after:"esperando en el aeropuerto.", hint:"aburrirse (to get bored)", tag:"ar" },
+  { before:"Él", answer:"se enamoró", after:"de ella en la feria del pueblo.", hint:"enamorarse (to fall in love)", tag:"ar" },
+
+  // More -ER
+  { before:"Yo", answer:"entendí", after:"el chiste en español por primera vez.", hint:"entender (to understand)", tag:"er" },
+  { before:"Tú", answer:"vendiste", after:"tu coche para irte de viaje.", hint:"vender (to sell)", tag:"er" },
+  { before:"Ella", answer:"se cayó", after:"de la bicicleta en el parque.", hint:"caerse (to fall)", tag:"er" },
+  { before:"Nosotros", answer:"recorrimos", after:"todo el mercado de La Merced.", hint:"recorrer (to go around)", tag:"er" },
+  { before:"Él", answer:"se atrevió", after:"a pedir trabajo en inglés.", hint:"atreverse (to dare)", tag:"er" },
+  { before:"Yo", answer:"me detuve", after:"a admirar la vista del Valle de México.", hint:"detenerse (to stop)", tag:"er" },
+  { before:"Tú", answer:"te convenciste", after:"de probar el escamol.", hint:"convencerse (to convince oneself)", tag:"er" },
+  { before:"Ella", answer:"se entretuvo", after:"viendo los murales de Rivera.", hint:"entretenerse (to entertain oneself)", tag:"er" },
+  { before:"Nosotros", answer:"nos establecimos", after:"en Querétaro hace cinco años.", hint:"establecerse (to settle)", tag:"er" },
+  { before:"Él", answer:"se comprometió", after:"con ella frente al árbol de Tule.", hint:"comprometerse (to get engaged)", tag:"er" },
+  { before:"Yo", answer:"comí", after:"flautas en el mercado de Coyoacán.", hint:"comer (to eat)", tag:"er" },
+  { before:"Tú", answer:"corriste", after:"la media maratón de la CDMX.", hint:"correr (to run)", tag:"er" },
+  { before:"Ella", answer:"se aburrió", after:"de esperar y se fue.", hint:"aburrirse (to get bored)", tag:"er" },
+  { before:"Nosotros", answer:"nos metimos", after:"al agua aunque estaba fría.", hint:"meterse (to get in)", tag:"er" },
+  { before:"Él", answer:"cedió", after:"su turno a la anciana.", hint:"ceder (to yield)", tag:"er" },
+  { before:"Yo", answer:"devolví", after:"el cambio que me dieron de más.", hint:"devolver (to return)", tag:"er" },
+  { before:"Tú", answer:"propusiste", after:"ir a Xochimilco.", hint:"proponer (to propose/suggest)", tag:"er" },
+  { before:"Ella", answer:"se opuso", after:"a cerrar el local temprano.", hint:"oponerse (to oppose)", tag:"er" },
+  { before:"Nosotros", answer:"nos sorprendimos", after:"con el tamaño del chile en nogada.", hint:"sorprenderse (to be surprised)", tag:"er" },
+  { before:"Él", answer:"se negó", after:"a pagar el precio que pedían.", hint:"negarse (to refuse)", tag:"er" },
+
+  // More -IR
+  { before:"Yo", answer:"me vestí", after:"de negro para el día de muertos.", hint:"vestirse (to dress)", tag:"ir" },
+  { before:"Tú", answer:"te divertiste", after:"en la feria de San Marcos.", hint:"divertirse (to have fun)", tag:"ir" },
+  { before:"Ella", answer:"salió", after:"adelante a pesar de todo.", hint:"salir (to come out ahead)", tag:"ir" },
+  { before:"Nosotros", answer:"nos reímos", after:"mucho con las historias del abuelo.", hint:"reírse (to laugh)", tag:"ir" },
+  { before:"Él", answer:"se despidió", after:"de todos en el aeropuerto.", hint:"despedirse (to say goodbye)", tag:"ir" },
+  { before:"Yo", answer:"me despedí", after:"con un abrazo largo.", hint:"despedirse (to say goodbye)", tag:"ir" },
+  { before:"Tú", answer:"te dormiste", after:"antes de que acabara la película.", hint:"dormirse (to fall asleep)", tag:"ir" },
+  { before:"Ella", answer:"se rió", after:"tanto que le salieron lágrimas.", hint:"reírse (to laugh)", tag:"ir" },
+  { before:"Nosotros", answer:"nos divertimos", after:"con el juego de la lotería.", hint:"divertirse (to have fun)", tag:"ir" },
+  { before:"Él", answer:"se vistió", after:"de Catrina para el desfile.", hint:"vestirse (to dress up)", tag:"ir" },
+  { before:"Yo", answer:"salí", after:"de la oficina a las nueve de la noche.", hint:"salir (to leave)", tag:"ir" },
+  { before:"Tú", answer:"dormiste", after:"la siesta después de comer.", hint:"dormir (to sleep)", tag:"ir" },
+  { before:"Ella", answer:"surgió", after:"como la mejor escritora del concurso.", hint:"surgir (to emerge)", tag:"ir" },
+  { before:"Nosotros", answer:"coincidimos", after:"en el mismo vuelo sin saberlo.", hint:"coincidir (to coincide)", tag:"ir" },
+  { before:"Él", answer:"midió", after:"la mesa antes de comprarla.", hint:"medir (to measure)", tag:"ir" },
+  { before:"Yo", answer:"me arrepentí", after:"de no haber probado el chapulín.", hint:"arrepentirse (to regret)", tag:"ir" },
+  { before:"Tú", answer:"te heriste", after:"con el cuchillo al cortar el mango.", hint:"herirse (to hurt oneself)", tag:"ir" },
+  { before:"Ella", answer:"se divirtió", after:"aprendiendo a hacer salsa.", hint:"divertirse (to have fun)", tag:"ir" },
+  { before:"Nosotros", answer:"discutimos", after:"a quién le tocaba pagar.", hint:"discutir (to argue)", tag:"ir" },
+  { before:"Él", answer:"repitió", after:"el pedido porque se lo habían olvidado.", hint:"repetir (to repeat)", tag:"ir" },
+  { before:"Yo", answer:"pedí", after:"la cuenta antes de que llegara el postre.", hint:"pedir (to ask for)", tag:"ir" },
+  { before:"Tú", answer:"seguiste", after:"la receta al pie de la letra.", hint:"seguir (to follow)", tag:"ir" },
+  { before:"Ella", answer:"sirvió", after:"el mole con arroz y frijoles.", hint:"servir (to serve)", tag:"ir" },
+  { before:"Nosotros", answer:"subimos", after:"a la cima del Iztaccíhuatl.", hint:"subir (to climb)", tag:"ir" },
+  { before:"Él", answer:"repitió", after:"la misma pregunta tres veces.", hint:"repetir (to repeat)", tag:"ir" },
+
+  // More irregulars
+  { before:"Yo", answer:"fui", after:"la primera en hablar.", hint:"ser/ir (to be/go)", tag:"irreg" },
+  { before:"Tú", answer:"pusiste", after:"el grito en el cielo cuando supiste.", hint:"poner (to put)", tag:"irreg" },
+  { before:"Ella", answer:"tuvo", after:"que volver a hacer el trámite.", hint:"tener (to have to)", tag:"irreg" },
+  { before:"Nosotros", answer:"vinimos", after:"de muy lejos para este evento.", hint:"venir (to come)", tag:"irreg" },
+  { before:"Él", answer:"dijo", after:"que sí sin pensarlo dos veces.", hint:"decir (to say)", tag:"irreg" },
+  { before:"Yo", answer:"hice", after:"las paces con mi hermano.", hint:"hacer (to make)", tag:"irreg" },
+  { before:"Tú", answer:"viste", after:"el partido en la cantina.", hint:"ver (to watch)", tag:"irreg" },
+  { before:"Ella", answer:"pudo", after:"cruzar la frontera sin problema.", hint:"poder (to be able to)", tag:"irreg" },
+  { before:"Nosotros", answer:"dimos", after:"una vuelta por la colonia Roma.", hint:"dar (to take a walk)", tag:"irreg" },
+  { before:"Él", answer:"fue", after:"una experiencia que nunca olvidaré.", hint:"ser (to be)", tag:"irreg" },
+  { before:"Yo", answer:"vine", after:"directo desde el trabajo.", hint:"venir (to come)", tag:"irreg" },
+  { before:"Tú", answer:"trajiste", after:"pan dulce de la panadería.", hint:"traer (to bring)", tag:"irreg" },
+  { before:"Ella", answer:"quiso", after:"quedarse un día más en Oaxaca.", hint:"querer (to want)", tag:"irreg" },
+  { before:"Nosotros", answer:"anduvimos", after:"de tienda en tienda buscando el regalo.", hint:"andar (to walk around)", tag:"irreg" },
+  { before:"Él", answer:"supo", after:"la respuesta sin haber estudiado.", hint:"saber (to know)", tag:"irreg" },
+  { before:"Yo", answer:"estuve", after:"a punto de perder el vuelo.", hint:"estar (to be)", tag:"irreg" },
+  { before:"Tú", answer:"hiciste", after:"lo correcto al devolver la cartera.", hint:"hacer (to do)", tag:"irreg" },
+  { before:"Ella", answer:"dio", after:"su mejor actuación esa noche.", hint:"dar (to give)", tag:"irreg" },
+  { before:"Nosotros", answer:"pudimos", after:"reservar el último cuarto del hotel.", hint:"poder (to be able to)", tag:"irreg" },
+  { before:"Él", answer:"condujo", after:"sin GPS por toda la ciudad.", hint:"conducir (to drive)", tag:"irreg" },
+  { before:"Yo", answer:"dije", after:"lo que pensaba sin filtro.", hint:"decir (to say)", tag:"irreg" },
+  { before:"Tú", answer:"quisiste", after:"convencerme pero no pudiste.", hint:"querer (to want/try)", tag:"irreg" },
+  { before:"Ella", answer:"anduvo", after:"buscando trabajo todo el mes.", hint:"andar (to go around)", tag:"irreg" },
+  { before:"Nosotros", answer:"supimos", after:"la noticia por el radio.", hint:"saber (to find out)", tag:"irreg" },
+  { before:"Él", answer:"vio", after:"las ballenas desde el barco.", hint:"ver (to see)", tag:"irreg" },
+  { before:"Yo", answer:"puse", after:"los frijoles a remojar desde la noche.", hint:"poner (to put)", tag:"irreg" },
+  { before:"Tú", answer:"diste", after:"en el clavo con ese comentario.", hint:"dar (to hit/give)", tag:"irreg" },
+  { before:"Ella", answer:"hizo", after:"todo el viaje sola sin quejarse.", hint:"hacer (to do)", tag:"irreg" },
+  { before:"Nosotros", answer:"estuvimos", after:"de acuerdo desde el principio.", hint:"estar (to be)", tag:"irreg" },
+  { before:"Él", answer:"trajo", after:"un mariachi de sorpresa.", hint:"traer (to bring)", tag:"irreg" },
+  { before:"Yo", answer:"tuve", after:"que explicar el chiste dos veces.", hint:"tener (to have to)", tag:"irreg" },
+  { before:"Tú", answer:"viniste", after:"justo cuando te necesitábamos.", hint:"venir (to come)", tag:"irreg" },
+  { before:"Ella", answer:"condujo", after:"el coche con mucha calma.", hint:"conducir (to drive)", tag:"irreg" },
+  { before:"Nosotros", answer:"dijimos", after:"que sí a la aventura.", hint:"decir (to say)", tag:"irreg" },
+  { before:"Él", answer:"obtuvo", after:"una beca para estudiar en España.", hint:"obtener (to obtain)", tag:"irreg" },
+  { before:"Yo", answer:"oí", after:"tu nombre en la radio hoy.", hint:"oír (to hear)", tag:"irreg" },
+  { before:"Tú", answer:"saliste", after:"del paso muy bien.", hint:"salir (to get out of)", tag:"irreg" },
+  { before:"Ella", answer:"puso", after:"su corazón en cada pincelada.", hint:"poner (to put)", tag:"irreg" },
+  { before:"Nosotros", answer:"hicimos", after:"fila dos horas para entrar.", hint:"hacer (to do)", tag:"irreg" },
+  { before:"Él", answer:"fue", after:"muy amable con los visitantes.", hint:"ser (to be)", tag:"irreg" },
+  { before:"Yo", answer:"vine", after:"a aprender, no a juzgar.", hint:"venir (to come)", tag:"irreg" },
+  { before:"Tú", answer:"supiste", after:"ganarte el respeto de todos.", hint:"saber (to know how)", tag:"irreg" },
+  { before:"Ella", answer:"trajo", after:"recuerdos de cada lugar que visitó.", hint:"traer (to bring)", tag:"irreg" },
+  { before:"Nosotros", answer:"anduvimos", after:"toda la noche por el festival.", hint:"andar (to walk around)", tag:"irreg" },
+  { before:"Él", answer:"quiso", after:"hacer las cosas bien desde el inicio.", hint:"querer (to want)", tag:"irreg" },
+  { before:"Yo", answer:"di", after:"gracias por todo al final de la cena.", hint:"dar (to give)", tag:"irreg" },
+  { before:"Tú", answer:"estuviste", after:"genial en la presentación.", hint:"estar (to be)", tag:"irreg" },
+  { before:"Ella", answer:"pudo", after:"dormir tranquila por primera vez.", hint:"poder (to be able to)", tag:"irreg" },
+  { before:"Nosotros", answer:"vimos", after:"el amanecer desde la azotea.", hint:"ver (to see)", tag:"irreg" },
+  { before:"Él", answer:"dijo", after:"adiós con los ojos.", hint:"decir (to say)", tag:"irreg" },
+  { before:"Yo", answer:"hice", after:"las maletas en diez minutos.", hint:"hacer (to do/pack)", tag:"irreg" },
+  { before:"Tú", answer:"fuiste", after:"muy valiente al hablar en público.", hint:"ser (to be)", tag:"irreg" },
+  { before:"Ella", answer:"vino", after:"a despedirse antes de emigrar.", hint:"venir (to come)", tag:"irreg" },
+  { before:"Nosotros", answer:"trajimos", after:"tortas ahogadas de Guadalajara.", hint:"traer (to bring)", tag:"irreg" },
+  { before:"Él", answer:"tuvo", after:"mucha paciencia con los turistas.", hint:"tener (to have)", tag:"irreg" },
+  { before:"Yo", answer:"pude", after:"entender todo sin subtítulos.", hint:"poder (to be able to)", tag:"irreg" },
+  { before:"Tú", answer:"anduviste", after:"con cuidado por el callejón oscuro.", hint:"andar (to walk)", tag:"irreg" },
+  { before:"Ella", answer:"supo", after:"exactamente qué decir.", hint:"saber (to know)", tag:"irreg" },
+  { before:"Nosotros", answer:"pusimos", after:"música de fondo para la cena.", hint:"poner (to put on)", tag:"irreg" },
+  { before:"Él", answer:"dio", after:"todo de sí en el partido final.", hint:"dar (to give)", tag:"irreg" },
+  { before:"Yo", answer:"estuve", after:"en Chiapas durante el festival.", hint:"estar (to be)", tag:"irreg" },
+  { before:"Tú", answer:"dijiste", after:"exactamente lo que necesitaba oír.", hint:"decir (to say)", tag:"irreg" },
+
+  // Extra variety
+  { before:"Yo", answer:"me acosté", after:"tarde viendo la novela.", hint:"acostarse (to go to bed)", tag:"ar" },
+  { before:"Tú", answer:"te acostaste", after:"sin cenar.", hint:"acostarse (to go to bed)", tag:"ar" },
+  { before:"Ella", answer:"se acostó", after:"en cuanto llegó.", hint:"acostarse (to go to bed)", tag:"ar" },
+  { before:"Él", answer:"cayó", after:"en la trampa del vendedor.", hint:"caer (to fall for)", tag:"irreg" },
+  { before:"Yo", answer:"caí", after:"en cuenta de mi error.", hint:"caer (to realize)", tag:"irreg" },
+  { before:"Tú", answer:"caíste", after:"dormido en la silla.", hint:"caer (to fall asleep)", tag:"irreg" },
+  { before:"Nosotros", answer:"caímos", after:"rendidos después de la caminata.", hint:"caer (to fall)", tag:"irreg" },
+  { before:"Ella", answer:"cayó", after:"enamorada a primera vista.", hint:"caer (to fall)", tag:"irreg" },
+  { before:"Yo", answer:"me despedí", after:"de México con lágrimas en los ojos.", hint:"despedirse (to say goodbye)", tag:"ir" },
+  { before:"Tú", answer:"te despediste", after:"de todos muy rápido.", hint:"despedirse (to say goodbye)", tag:"ir" },
+  { before:"Nosotros", answer:"nos despedimos", after:"en la terminal de autobuses.", hint:"despedirse (to say goodbye)", tag:"ir" },
+  { before:"Él", answer:"se convirtió", after:"en el mejor cocinero del restaurante.", hint:"convertirse (to become)", tag:"ir" },
+  { before:"Yo", answer:"me convertí", after:"en fanático del mezcal.", hint:"convertirse (to become)", tag:"ir" },
+  { before:"Tú", answer:"te convertiste", after:"en mi mejor amigo en ese viaje.", hint:"convertirse (to become)", tag:"ir" },
+  { before:"Ella", answer:"se convirtió", after:"en la voz del barrio.", hint:"convertirse (to become)", tag:"ir" },
+  { before:"Nosotros", answer:"nos convertimos", after:"en socios de negocio.", hint:"convertirse (to become)", tag:"ir" },
+  { before:"Yo", answer:"me acerqué", after:"al puesto para ver los aretes.", hint:"acercarse (to approach)", tag:"ar" },
+  { before:"Tú", answer:"te acercaste", after:"demasiado al borde.", hint:"acercarse (to get close)", tag:"ar" },
+  { before:"Él", answer:"se acercó", after:"a preguntar la dirección.", hint:"acercarse (to approach)", tag:"ar" },
+  { before:"Nosotros", answer:"nos acercamos", after:"al mariachi para escuchar mejor.", hint:"acercarse (to get closer)", tag:"ar" },
+  { before:"Yo", answer:"protesté", after:"por el cobro incorrecto.", hint:"protestar (to protest)", tag:"ar" },
+  { before:"Tú", answer:"protestaste", after:"cuando cerraron la tiendita.", hint:"protestar (to protest)", tag:"ar" },
+  { before:"Él", answer:"protestó", after:"en silencio pero con dignidad.", hint:"protestar (to protest)", tag:"ar" },
+  { before:"Yo", answer:"brindé", after:"por los novios con mezcal.", hint:"brindar (to toast)", tag:"ar" },
+  { before:"Tú", answer:"brindaste", after:"con agua mineral porque manejabas.", hint:"brindar (to toast)", tag:"ar" },
+  { before:"Ella", answer:"brindó", after:"por un año mejor.", hint:"brindar (to toast)", tag:"ar" },
+  { before:"Nosotros", answer:"brindamos", after:"juntos en año nuevo.", hint:"brindar (to toast)", tag:"ar" },
+  { before:"Yo", answer:"madrugué", after:"para comprar boletos en taquilla.", hint:"madrugar (to get up early)", tag:"ar" },
+  { before:"Él", answer:"madrugó", after:"para ver el amanecer en las pirámides.", hint:"madrugar (to get up early)", tag:"ar" },
+  { before:"Nosotros", answer:"madrugamos", after:"para llegar a Teotihuacán antes del calor.", hint:"madrugar (to get up early)", tag:"ar" },
+  { before:"Yo", answer:"me animé", after:"a hablar con el mesero en español.", hint:"animarse (to dare/decide)", tag:"ar" },
+  { before:"Tú", answer:"te animaste", after:"a cantar en el karaoke del barco.", hint:"animarse (to dare)", tag:"ar" },
+  { before:"Él", answer:"se animó", after:"a probar el chapulín.", hint:"animarse (to dare)", tag:"ar" },
+  { before:"Nosotros", answer:"nos animamos", after:"a tomar la clase de cocina.", hint:"animarse (to decide to)", tag:"ar" },
+  { before:"Yo", answer:"agradecí", after:"el gesto con una sonrisa.", hint:"agradecer (to be grateful)", tag:"er" },
+  { before:"Tú", answer:"agradeciste", after:"el favor con un guiso.", hint:"agradecer (to thank)", tag:"er" },
+  { before:"Él", answer:"agradeció", after:"la hospitalidad antes de irse.", hint:"agradecer (to thank)", tag:"er" },
+  { before:"Nosotros", answer:"agradecimos", after:"la bienvenida tan cálida.", hint:"agradecer (to thank)", tag:"er" },
+  { before:"Yo", answer:"padecí", after:"el calor de Mérida en agosto.", hint:"padecer (to suffer/endure)", tag:"er" },
+  { before:"Él", answer:"padeció", after:"una gripa terrible en plena boda.", hint:"padecer (to suffer)", tag:"er" },
+  { before:"Yo", answer:"obedecí", after:"las indicaciones del médico.", hint:"obedecer (to obey)", tag:"er" },
+  { before:"Tú", answer:"obedeciste", after:"las reglas sin chistar.", hint:"obedecer (to obey)", tag:"er" },
+  { before:"Él", answer:"obedeció", after:"cada instrucción al pie de la letra.", hint:"obedecer (to obey)", tag:"er" },
+  { before:"Yo", answer:"traduje", after:"el contrato del inglés al español.", hint:"traducir (to translate)", tag:"irreg" },
+  { before:"Tú", answer:"tradujiste", after:"el correo para tu jefe.", hint:"traducir (to translate)", tag:"irreg" },
+  { before:"Nosotros", answer:"tradujimos", after:"el menú para los turistas.", hint:"traducir (to translate)", tag:"irreg" },
+  { before:"Yo", answer:"deduje", after:"que algo estaba mal por su cara.", hint:"deducir (to deduce)", tag:"irreg" },
+  { before:"Él", answer:"dedujo", after:"la respuesta sin ver el libro.", hint:"deducir (to deduce)", tag:"irreg" },
+  { before:"Yo", answer:"reduje", after:"el azúcar en la receta.", hint:"reducir (to reduce)", tag:"irreg" },
+  { before:"Ella", answer:"redujo", after:"sus gastos al mínimo.", hint:"reducir (to reduce)", tag:"irreg" },
+  { before:"Yo", answer:"introduje", after:"el código correcto.", hint:"introducir (to introduce/enter)", tag:"irreg" },
+  { before:"Él", answer:"introdujo", after:"una nueva técnica en la cocina.", hint:"introducir (to introduce)", tag:"irreg" },
+  { before:"Yo", answer:"conduje", after:"por primera vez en carretera.", hint:"conducir (to drive)", tag:"irreg" },
+  { before:"Tú", answer:"condujiste", after:"con mucha precaución.", hint:"conducir (to drive)", tag:"irreg" },
+  { before:"Nosotros", answer:"condujimos", after:"en silencio todo el camino.", hint:"conducir (to drive)", tag:"irreg" },
+
+  // Final batch to reach 500
+  { before:"Yo", answer:"propuse", after:"un brindis por el equipo.", hint:"proponer (to propose)", tag:"irreg" },
+  { before:"Tú", answer:"propusiste", after:"ir a Xochimilco en trajinera.", hint:"proponer (to suggest)", tag:"irreg" },
+  { before:"Ella", answer:"propuso", after:"cambiar el menú del restaurante.", hint:"proponer (to propose)", tag:"irreg" },
+  { before:"Nosotros", answer:"propusimos", after:"una nueva ruta para el viaje.", hint:"proponer (to suggest)", tag:"irreg" },
+  { before:"Yo", answer:"compuse", after:"una canción para su cumpleaños.", hint:"componer (to compose)", tag:"irreg" },
+  { before:"Él", answer:"compuso", after:"el mejor huapango de la región.", hint:"componer (to compose)", tag:"irreg" },
+  { before:"Yo", answer:"dispuse", after:"todo para la cena romántica.", hint:"disponer (to arrange)", tag:"irreg" },
+  { before:"Él", answer:"dispuso", after:"los ingredientes en la mesa.", hint:"disponer (to arrange)", tag:"irreg" },
+  { before:"Yo", answer:"expuse", after:"mis ideas ante todo el grupo.", hint:"exponer (to present)", tag:"irreg" },
+  { before:"Ella", answer:"expuso", after:"su obra en la galería Frida.", hint:"exponer (to exhibit)", tag:"irreg" },
+  { before:"Nosotros", answer:"expusimos", after:"el proyecto con mucha seguridad.", hint:"exponer (to present)", tag:"irreg" },
+  { before:"Yo", answer:"impuse", after:"mis condiciones antes de firmar.", hint:"imponer (to impose)", tag:"irreg" },
+  { before:"Él", answer:"impuso", after:"su estilo en cada platillo.", hint:"imponer (to impose)", tag:"irreg" },
+  { before:"Yo", answer:"opuse", after:"resistencia al cambio al principio.", hint:"oponer (to oppose)", tag:"irreg" },
+  { before:"Ella", answer:"se opuso", after:"a vender la casa familiar.", hint:"oponerse (to oppose)", tag:"irreg" },
+  { before:"Yo", answer:"me repuse", after:"rápido de la gripa.", hint:"reponerse (to recover)", tag:"irreg" },
+  { before:"Él", answer:"se repuso", after:"del susto en pocos minutos.", hint:"reponerse (to recover)", tag:"irreg" },
+  { before:"Yo", answer:"sostuve", after:"la escalera mientras subía.", hint:"sostener (to hold)", tag:"irreg" },
+  { before:"Tú", answer:"sostuviste", after:"la mirada sin parpadear.", hint:"sostener (to hold/maintain)", tag:"irreg" },
+  { before:"Él", answer:"sostuvo", after:"que tenía razón hasta el final.", hint:"sostener (to maintain/claim)", tag:"irreg" },
+  { before:"Nosotros", answer:"sostuvimos", after:"una conversación muy profunda.", hint:"sostener (to hold)", tag:"irreg" },
+  { before:"Yo", answer:"retuve", after:"toda la información del tour.", hint:"retener (to retain)", tag:"irreg" },
+  { before:"Él", answer:"retuvo", after:"el pasaporte por error.", hint:"retener (to hold back)", tag:"irreg" },
+  { before:"Yo", answer:"mantuve", after:"la calma en el caos del tráfico.", hint:"mantener (to maintain)", tag:"irreg" },
+  { before:"Tú", answer:"mantuviste", after:"el ritmo durante toda la caminata.", hint:"mantener (to keep up)", tag:"irreg" },
+  { before:"Ella", answer:"mantuvo", after:"el negocio sola durante la pandemia.", hint:"mantener (to maintain)", tag:"irreg" },
+  { before:"Nosotros", answer:"mantuvimos", after:"la tradición del día de muertos.", hint:"mantener (to keep up)", tag:"irreg" },
+  { before:"Yo", answer:"contuve", after:"la risa cuando me contaron el chiste.", hint:"contener (to hold back)", tag:"irreg" },
+  { before:"Él", answer:"contuvo", after:"el llanto hasta llegar a casa.", hint:"contener (to hold back)", tag:"irreg" },
+  { before:"Yo", answer:"obtuve", after:"mi licencia de manejo al primer intento.", hint:"obtener (to obtain)", tag:"irreg" },
+  { before:"Tú", answer:"obtuviste", after:"una calificación perfecta.", hint:"obtener (to obtain)", tag:"irreg" },
+  { before:"Ella", answer:"obtuvo", after:"el primer lugar en la competencia.", hint:"obtener (to obtain)", tag:"irreg" },
+  { before:"Nosotros", answer:"obtuvimos", after:"los permisos necesarios.", hint:"obtener (to obtain)", tag:"irreg" },
+  { before:"Yo", answer:"detuve", after:"el taxi con la mano.", hint:"detener (to stop)", tag:"irreg" },
+  { before:"Tú", answer:"detuviste", after:"al niño antes de que cruzara.", hint:"detener (to stop)", tag:"irreg" },
+  { before:"Él", answer:"detuvo", after:"el coche en seco.", hint:"detener (to stop)", tag:"irreg" },
+  { before:"Nosotros", answer:"detuvimos", after:"el paso para admirar la vista.", hint:"detener (to stop)", tag:"irreg" },
+  { before:"Yo", answer:"contuve", after:"el aliento al ver los fuegos artificiales.", hint:"contener (to hold)", tag:"irreg" },
+  { before:"Yo", answer:"intervine", after:"cuando la discusión se puso fea.", hint:"intervenir (to intervene)", tag:"irreg" },
+  { before:"Él", answer:"intervino", after:"para calmar los ánimos.", hint:"intervenir (to intervene)", tag:"irreg" },
+  { before:"Nosotros", answer:"intervinimos", after:"a tiempo para evitar el problema.", hint:"intervenir (to intervene)", tag:"irreg" },
+  { before:"Yo", answer:"previne", after:"el problema antes de que ocurriera.", hint:"prevenir (to prevent)", tag:"irreg" },
+  { before:"Él", answer:"previno", after:"a todos sobre el mal tiempo.", hint:"prevenir (to warn)", tag:"irreg" },
+  { before:"Yo", answer:"convine", after:"en reunirnos al día siguiente.", hint:"convenir (to agree)", tag:"irreg" },
+  { before:"Nosotros", answer:"convinimos", after:"en partir a las seis.", hint:"convenir (to agree)", tag:"irreg" },
+  { before:"Yo", answer:"me abstuve", after:"de opinar para no crear conflicto.", hint:"abstenerse (to abstain)", tag:"irreg" },
+  { before:"Él", answer:"se abstuvo", after:"de votar en la reunión.", hint:"abstenerse (to abstain)", tag:"irreg" },
+  { before:"Yo", answer:"me contuve", after:"para no decir algo que lamentara.", hint:"contenerse (to hold oneself back)", tag:"irreg" },
+  { before:"Tú", answer:"te contuviste", after:"muy bien en esa situación.", hint:"contenerse (to restrain oneself)", tag:"irreg" },
+  { before:"Yo", answer:"bendije", after:"la mesa antes de comer.", hint:"bendecir (to bless)", tag:"irreg" },
+  { before:"Ella", answer:"bendijo", after:"a cada uno de sus hijos.", hint:"bendecir (to bless)", tag:"irreg" },
+  { before:"Yo", answer:"maldije", after:"el tráfico del periférico.", hint:"maldecir (to curse)", tag:"irreg" },
+  { before:"Él", answer:"maldijo", after:"su mala suerte.", hint:"maldecir (to curse)", tag:"irreg" },
+  { before:"Yo", answer:"predije", after:"que iba a llover.", hint:"predecir (to predict)", tag:"irreg" },
+  { before:"Él", answer:"predijo", after:"el resultado del partido.", hint:"predecir (to predict)", tag:"irreg" },
+  { before:"Yo", answer:"satisfice", after:"todos los requisitos del puesto.", hint:"satisfacer (to satisfy)", tag:"irreg" },
+  { before:"Él", answer:"satisfizo", after:"a todos los clientes ese día.", hint:"satisfacer (to satisfy)", tag:"irreg" },
+  { before:"Nosotros", answer:"satisficimos", after:"las expectativas del cliente.", hint:"satisfacer (to satisfy)", tag:"irreg" },
+  { before:"Yo", answer:"rehíce", after:"el pastel porque se me quemó.", hint:"rehacer (to redo)", tag:"irreg" },
+  { before:"Ella", answer:"rehízo", after:"el vestido dos veces.", hint:"rehacer (to redo)", tag:"irreg" },
+  { before:"Yo", answer:"deshice", after:"las maletas nada más llegar.", hint:"deshacer (to unpack/undo)", tag:"irreg" },
+  { before:"Tú", answer:"deshiciste", after:"el nudo con mucha paciencia.", hint:"deshacer (to undo)", tag:"irreg" },
+  { before:"Él", answer:"deshizo", after:"el trato antes de firmar.", hint:"deshacer (to undo)", tag:"irreg" },
+  { before:"Yo", answer:"contrarrepliqué", after:"con datos sólidos.", hint:"contrarreplicar (to counter-argue)", tag:"ar" },
+  { before:"Yo", answer:"me familiaricé", after:"con el transporte público.", hint:"familiarizarse (to familiarize)", tag:"ar" },
+  { before:"Tú", answer:"te familiarizaste", after:"con el barrio en poco tiempo.", hint:"familiarizarse (to get familiar)", tag:"ar" },
+  { before:"Él", answer:"se familiarizó", after:"con la cultura oaxaqueña.", hint:"familiarizarse (to become familiar)", tag:"ar" },
+  { before:"Yo", answer:"me especialicé", after:"en cocina tradicional mexicana.", hint:"especializarse (to specialize)", tag:"ar" },
+  { before:"Ella", answer:"se especializó", after:"en lenguas indígenas.", hint:"especializarse (to specialize)", tag:"ar" },
+  { before:"Yo", answer:"me acostumbré", after:"a comer chile en todo.", hint:"acostumbrarse (to get used to)", tag:"ar" },
+  { before:"Tú", answer:"te acostumbraste", after:"al ruido de la ciudad.", hint:"acostumbrarse (to get used to)", tag:"ar" },
+  { before:"Él", answer:"se acostumbró", after:"a madrugar para el trabajo.", hint:"acostumbrarse (to get used to)", tag:"ar" },
+  { before:"Nosotros", answer:"nos acostumbramos", after:"al ritmo tranquilo del pueblo.", hint:"acostumbrarse (to get used to)", tag:"ar" },
+  { before:"Yo", answer:"me emocioné", after:"cuando vi el Ángel de la Independencia.", hint:"emocionarse (to get emotional)", tag:"ar" },
+  { before:"Tú", answer:"te emocionaste", after:"con la música del mariachi.", hint:"emocionarse (to get emotional)", tag:"ar" },
+  { before:"Él", answer:"se emocionó", after:"al ver a su familia tras dos años.", hint:"emocionarse (to get emotional)", tag:"ar" },
+  { before:"Nosotros", answer:"nos emocionamos", after:"cuando ganó la selección.", hint:"emocionarse (to get emotional)", tag:"ar" },
+  { before:"Yo", answer:"me adapté", after:"a la altitud de la Ciudad de México.", hint:"adaptarse (to adapt)", tag:"ar" },
+  { before:"Tú", answer:"te adaptaste", after:"rápido a la vida en el DF.", hint:"adaptarse (to adapt)", tag:"ar" },
+  { before:"Él", answer:"se adaptó", after:"sin problemas a la cultura.", hint:"adaptarse (to adapt)", tag:"ar" },
+  { before:"Nosotros", answer:"nos adaptamos", after:"al horario de comida mexicano.", hint:"adaptarse (to adapt)", tag:"ar" },
+  { before:"Yo", answer:"me confundí", after:"con los nombres de las calles.", hint:"confundirse (to get confused)", tag:"ir" },
+  { before:"Tú", answer:"te confundiste", after:"de calle dos veces.", hint:"confundirse (to get confused)", tag:"ir" },
+  { before:"Él", answer:"se confundió", after:"de autobús y llegó tarde.", hint:"confundirse (to get confused)", tag:"ir" },
+  { before:"Nosotros", answer:"nos confundimos", after:"con el cambio de horario.", hint:"confundirse (to get confused)", tag:"ir" },
 ];
 
 const PER_DAY = 10;
 const TAG_LABELS = { ar:"-ar", er:"-er", ir:"-ir", irreg:"irregular" };
 
-function getDailySeed() {
-  const d = new Date();
-  return d.getFullYear() * 10000 + (d.getMonth()+1) * 100 + d.getDate();
-}
-
+function getDailySeed() { const d = new Date(); return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(); }
 function seededShuffle(arr, seed) {
-  const a = [...arr]; let s = seed;
-  for (let i = a.length-1; i > 0; i--) {
-    s = (s * 1664525 + 1013904223) & 0xffffffff;
-    const j = Math.abs(s) % (i+1);
-    [a[i], a[j]] = [a[j], a[i]];
-  }
+  const a=[...arr]; let s=seed;
+  for(let i=a.length-1;i>0;i--){s=(s*1664525+1013904223)&0xffffffff;const j=Math.abs(s)%(i+1);[a[i],a[j]]=[a[j],a[i]];}
   return a;
 }
+function getTodayKey(){return new Date().toISOString().slice(0,10);}
+function getDateLabel(){return new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"});}
+function formatTime(s){return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,"0")}`;}
+function loadStreak(){try{return JSON.parse(localStorage.getItem("streak")||"null")||{count:0,lastCompleted:null};}catch{return{count:0,lastCompleted:null};}}
+function saveStreak(s){try{localStorage.setItem("streak",JSON.stringify(s));}catch{}}
+function loadTodayState(){try{const s=JSON.parse(localStorage.getItem("todayState")||"null");if(s&&s.dateKey===getTodayKey())return s;return null;}catch{return null;}}
+function saveTodayState(s){try{localStorage.setItem("todayState",JSON.stringify(s));}catch{}}
 
-function getTodayKey() {
-  return new Date().toISOString().slice(0,10);
+let exercises=[],current=0,score=0,checked=false,results=[];
+let seconds=0,timerInterval=null,streak={count:0,lastCompleted:null};
+
+function startTimer(){timerInterval=setInterval(()=>{seconds++;const el=document.getElementById("timer");if(el)el.textContent=formatTime(seconds);},1000);}
+function stopTimer(){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
+
+function init(){
+  streak=loadStreak();
+  const saved=loadTodayState();
+  if(saved&&saved.completed){showDone(saved);return;}
+  exercises=seededShuffle(ALL,getDailySeed()).slice(0,PER_DAY);
+  if(saved){current=saved.current||0;score=saved.score||0;results=saved.results||[];seconds=saved.seconds||0;}
+  else{current=0;score=0;results=[];seconds=0;}
+  startTimer();render();
 }
 
-function getDateLabel() {
-  return new Date().toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-}
-
-function formatTime(s) {
-  return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
-}
-
-function loadStreak() {
-  try { return JSON.parse(localStorage.getItem('streak') || 'null') || { count:0, lastCompleted:null }; }
-  catch { return { count:0, lastCompleted:null }; }
-}
-
-function saveStreak(s) {
-  try { localStorage.setItem('streak', JSON.stringify(s)); } catch {}
-}
-
-function loadTodayState() {
-  try {
-    const s = JSON.parse(localStorage.getItem('todayState') || 'null');
-    if (s && s.dateKey === getTodayKey()) return s;
-    return null;
-  } catch { return null; }
-}
-
-function saveTodayState(s) {
-  try { localStorage.setItem('todayState', JSON.stringify(s)); } catch {}
-}
-
-let exercises=[], current=0, score=0, checked=false, results=[];
-let seconds=0, timerInterval=null, streak={ count:0, lastCompleted:null };
-
-function startTimer() {
-  timerInterval = setInterval(() => {
-    seconds++;
-    const el = document.getElementById('timer');
-    if (el) el.textContent = formatTime(seconds);
-  }, 1000);
-}
-
-function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval=null; } }
-
-function init() {
-  streak = loadStreak();
-  const saved = loadTodayState();
-
-  if (saved && saved.completed) { showDone(saved); return; }
-
-  exercises = seededShuffle(ALL, getDailySeed()).slice(0, PER_DAY);
-
-  if (saved) {
-    current = saved.current || 0;
-    score = saved.score || 0;
-    results = saved.results || [];
-    seconds = saved.seconds || 0;
-  } else {
-    current=0; score=0; results=[]; seconds=0;
-  }
-
-  startTimer();
-  render();
-}
-
-function render() {
-  const c = exercises[current];
-  const pct = (current / exercises.length) * 100;
-  const sl = streak.count > 0 ? `${streak.count} day streak 🔥` : 'No streak yet';
-
-  document.getElementById('app').innerHTML = `
+function render(){
+  const c=exercises[current];
+  const pct=(current/exercises.length)*100;
+  const sl=streak.count>0?`${streak.count} day streak \uD83D\uDD25`:"No streak yet";
+  document.getElementById("app").innerHTML=`
     <div class="meta-row">
       <span class="streak-badge">${sl}</span>
       <span class="timer-badge" id="timer">${formatTime(seconds)}</span>
     </div>
-    <div class="progress-wrap"><div class="progress-fill" id="prog" style="width:${pct}%"></div></div>
-    <div class="card" id="q-card">
-      <div class="q-count">${getDateLabel()} · ${current+1} of ${exercises.length}</div>
+    <div class="progress-wrap"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="card">
+      <div class="q-count">${getDateLabel()} &middot; ${current+1} of ${exercises.length}</div>
       <div class="hint-row">Fill in: <strong>${c.hint}</strong> <span class="tag tag-${c.tag}">${TAG_LABELS[c.tag]}</span></div>
       <div class="sentence">
         <span>${c.before}</span>
@@ -454,86 +658,77 @@ function render() {
     </div>
     <div class="score-row" id="sc">Score: <span>${score}</span> / ${current}</div>
   `;
-
-  const inp = document.getElementById('inp');
-  inp.addEventListener('keydown', e => { if (e.key==='Enter') check(); });
-  inp.focus();
-  checked = false;
+  const inp=document.getElementById("inp");
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter")check();});
+  inp.focus();checked=false;
 }
 
-function check() {
-  if (checked) return;
-  const c = exercises[current];
-  const inp = document.getElementById('inp');
-  const val = inp.value.trim().toLowerCase();
-  checked = true;
-  const ok = val === c.answer;
-  inp.classList.add(ok ? 'correct' : 'wrong');
-  inp.disabled = true;
-  const fb = document.getElementById('fb');
-  fb.className = 'feedback ' + (ok ? 'correct' : 'wrong');
-  fb.textContent = ok ? '¡Correcto! ✓' : `Not quite — the answer is: ${c.answer}`;
-  if (ok) score++;
-  results.push({ correct:ok, answer:c.answer, given:val });
-  document.getElementById('sc').innerHTML = `Score: <span>${score}</span> / ${current+1}`;
-  document.getElementById('btns').innerHTML = `<button class="primary" onclick="next()">${current+1 < exercises.length ? 'Next →' : 'See results →'}</button>`;
-  saveTodayState({ dateKey:getTodayKey(), current:current+1, score, results, seconds, completed:false });
+function check(){
+  if(checked)return;
+  const c=exercises[current];
+  const inp=document.getElementById("inp");
+  const val=inp.value.trim().toLowerCase();
+  checked=true;
+  const ok=val===c.answer;
+  inp.classList.add(ok?"correct":"wrong");inp.disabled=true;
+  const fb=document.getElementById("fb");
+  fb.className="feedback "+(ok?"correct":"wrong");
+  fb.textContent=ok?"\u00a1Correcto! \u2713":`Not quite \u2014 the answer is: ${c.answer}`;
+  if(ok)score++;
+  results.push({correct:ok,answer:c.answer,given:val});
+  document.getElementById("sc").innerHTML=`Score: <span>${score}</span> / ${current+1}`;
+  document.getElementById("btns").innerHTML=`<button class="primary" onclick="next()">${current+1<exercises.length?"Next \u2192":"See results \u2192"}</button>`;
+  saveTodayState({dateKey:getTodayKey(),current:current+1,score,results,seconds,completed:false});
 }
 
-function skip() {
-  if (checked) return;
-  const c = exercises[current];
-  const inp = document.getElementById('inp');
-  checked = true;
-  inp.value = c.answer; inp.classList.add('wrong'); inp.disabled = true;
-  const fb = document.getElementById('fb');
-  fb.className = 'feedback wrong'; fb.textContent = `Answer: ${c.answer}`;
-  results.push({ correct:false, answer:c.answer, given:'' });
-  document.getElementById('sc').innerHTML = `Score: <span>${score}</span> / ${current+1}`;
-  document.getElementById('btns').innerHTML = `<button class="primary" onclick="next()">${current+1 < exercises.length ? 'Next →' : 'See results →'}</button>`;
-  saveTodayState({ dateKey:getTodayKey(), current:current+1, score, results, seconds, completed:false });
+function skip(){
+  if(checked)return;
+  const c=exercises[current];
+  const inp=document.getElementById("inp");
+  checked=true;inp.value=c.answer;inp.classList.add("wrong");inp.disabled=true;
+  const fb=document.getElementById("fb");
+  fb.className="feedback wrong";fb.textContent=`Answer: ${c.answer}`;
+  results.push({correct:false,answer:c.answer,given:""});
+  document.getElementById("sc").innerHTML=`Score: <span>${score}</span> / ${current+1}`;
+  document.getElementById("btns").innerHTML=`<button class="primary" onclick="next()">${current+1<exercises.length?"Next \u2192":"See results \u2192"}</button>`;
+  saveTodayState({dateKey:getTodayKey(),current:current+1,score,results,seconds,completed:false});
 }
 
-function next() {
-  current++;
-  if (current >= exercises.length) showSummary();
-  else render();
-}
+function next(){current++;if(current>=exercises.length)showSummary();else render();}
 
-function showSummary() {
+function showSummary(){
   stopTimer();
-  const pct = Math.round((score/exercises.length)*100);
-  const medal = pct===100?'🥇':pct>=70?'🥈':'🥉';
-  const msg = pct===100?'¡Perfecto! Absolutely flawless!':pct>=80?'¡Muy bien! Great work!':pct>=60?'¡Bien! Solid effort!':'¡Sigue adelante! Keep going!';
-  const todayKey = getTodayKey();
-  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-  const yKey = yesterday.toISOString().slice(0,10);
-  let newCount = (streak.lastCompleted===yKey) ? streak.count+1 : (streak.lastCompleted===todayKey ? streak.count : 1);
-  saveStreak({ count:newCount, lastCompleted:todayKey });
-  saveTodayState({ dateKey:todayKey, current, score, results, seconds, completed:true });
-  const dots = results.map(r=>`<span>${r.correct?'✅':'❌'}</span>`).join('');
-
-  document.getElementById('app').innerHTML = `
+  const pct=Math.round((score/exercises.length)*100);
+  const medal=pct===100?"\uD83E\uDD47":pct>=70?"\uD83E\uDD48":"\uD83E\uDD49";
+  const msg=pct===100?"\u00a1Perfecto! Absolutely flawless!":pct>=80?"\u00a1Muy bien! Great work!":pct>=60?"\u00a1Bien! Solid effort!":"\u00a1Sigue adelante! Keep going!";
+  const todayKey=getTodayKey();
+  const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+  const yKey=yesterday.toISOString().slice(0,10);
+  let newCount=streak.lastCompleted===yKey?streak.count+1:(streak.lastCompleted===todayKey?streak.count:1);
+  saveStreak({count:newCount,lastCompleted:todayKey});
+  saveTodayState({dateKey:todayKey,current,score,results,seconds,completed:true});
+  const dots=results.map(r=>`<span>${r.correct?"\u2705":"\u274C"}</span>`).join("");
+  document.getElementById("app").innerHTML=`
     <div class="summary">
       <div class="medal">${medal}</div>
       <h2>Challenge complete!</h2>
       <div class="big">${score}/${exercises.length}</div>
       <div class="dots">${dots}</div>
       <p>${msg}</p>
-      <p class="time-note">Time: ${formatTime(seconds)} · ${newCount} day streak 🔥</p>
+      <p class="time-note">Time: ${formatTime(seconds)} &middot; ${newCount} day streak \uD83D\uDD25</p>
       <button class="primary" onclick="playAgain()">Play again with new sentences</button>
     </div>
   `;
 }
 
-function showDone(saved) {
-  const dots = (saved.results||[]).map(r=>`<span>${r.correct?'✅':'❌'}</span>`).join('');
-  document.getElementById('app').innerHTML = `
+function showDone(saved){
+  const dots=(saved.results||[]).map(r=>`<span>${r.correct?"\u2705":"\u274C"}</span>`).join("");
+  document.getElementById("app").innerHTML=`
     <div class="done-card">
-      <div style="font-size:2.5rem;margin-bottom:0.5rem;">🌮</div>
+      <div style="font-size:2.5rem;margin-bottom:0.5rem;">\uD83C\uDF2E</div>
       <h2>Already done today!</h2>
       <div class="big">${saved.score}/${PER_DAY}</div>
-      <div class="dots" style="margin:0.75rem 0;">${dots}</div>
+      <div style="font-size:1.4rem;margin:0.75rem 0;letter-spacing:2px;">${dots}</div>
       <p>Time: ${formatTime(saved.seconds||0)}</p>
       <p style="margin-bottom:1.25rem;">Come back tomorrow for a fresh set.</p>
       <button class="primary" onclick="playAgain()">Practice again anyway</button>
@@ -541,12 +736,11 @@ function showDone(saved) {
   `;
 }
 
-function playAgain() {
+function playAgain(){
   stopTimer();
-  exercises = seededShuffle(ALL, Date.now()).slice(0, PER_DAY);
-  current=0; score=0; results=[]; seconds=0;
-  startTimer();
-  render();
+  exercises=seededShuffle(ALL,Date.now()).slice(0,PER_DAY);
+  current=0;score=0;results=[];seconds=0;
+  startTimer();render();
 }
 
 init();
