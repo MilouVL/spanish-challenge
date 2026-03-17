@@ -12,22 +12,30 @@
       --accent: #c8440f; --border: #e2d9c8;
       --tag-ar: #e8f0fb; --tag-ar-t: #1a4a8a; --tag-er: #ede8fb; --tag-er-t: #4a2d9b;
       --tag-ir: #e8f5ee; --tag-ir-t: #1a6640; --tag-irreg: #fdf3e0; --tag-irreg-t: #7a4a0a;
-      --green: #2d6a4f; --red: #9b1c1c;
+      --green: #2d6a4f; --red: #9b1c1c; --amber: #92540a; --amber-bg: #fdf3e0;
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: "DM Sans", sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem 4rem; }
-    header { text-align: center; margin-bottom: 2.5rem; animation: fadeDown 0.6s ease both; }
+    header { text-align: center; margin-bottom: 2rem; animation: fadeDown 0.6s ease both; }
     header h1 { font-family: "Fraunces", serif; font-size: clamp(2rem, 6vw, 3rem); font-weight: 600; letter-spacing: -0.02em; color: var(--ink); line-height: 1.1; }
     header h1 em { font-style: italic; color: var(--accent); }
     header p { font-size: 0.875rem; color: var(--ink3); margin-top: 0.4rem; }
     .app { width: 100%; max-width: 560px; animation: fadeUp 0.5s ease both 0.1s; }
-    .meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-    .streak-badge { background: var(--tag-irreg); color: var(--tag-irreg-t); border-radius: 999px; padding: 3px 12px; font-size: 0.78rem; font-weight: 500; }
+    .meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 6px; flex-wrap: wrap; }
+    .badge { border-radius: 999px; padding: 3px 12px; font-size: 0.78rem; font-weight: 500; }
+    .streak-badge { background: var(--tag-irreg); color: var(--tag-irreg-t); }
+    .review-badge { background: var(--amber-bg); color: var(--amber); border: 1px solid #e8c87a; }
+    .review-badge.empty { background: var(--tag-ir); color: var(--tag-ir-t); border: none; }
     .timer-badge { background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 3px 12px; font-size: 0.78rem; font-variant-numeric: tabular-nums; color: var(--ink2); }
-    .progress-wrap { height: 4px; background: var(--border); border-radius: 999px; margin-bottom: 1.5rem; overflow: hidden; }
-    .progress-fill { height: 4px; background: var(--accent); border-radius: 999px; transition: width 0.4s cubic-bezier(.4,0,.2,1); }
+    .progress-wrap { height: 4px; background: var(--border); border-radius: 999px; margin-bottom: 0.6rem; overflow: hidden; }
+    .progress-fill { height: 4px; border-radius: 999px; transition: width 0.4s cubic-bezier(.4,0,.2,1); }
+    .progress-fill.new { background: var(--accent); }
+    .progress-fill.review { background: var(--amber); }
+    .progress-legend { display: flex; gap: 16px; margin-bottom: 1.25rem; font-size: 0.75rem; color: var(--ink3); }
+    .legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
-    .q-count { font-size: 0.78rem; color: var(--ink3); margin-bottom: 0.75rem; }
+    .card.is-review { border-color: #e8c87a; border-left: 4px solid var(--amber); }
+    .q-count { font-size: 0.78rem; color: var(--ink3); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px; }
+    .review-pill { font-size: 0.7rem; background: var(--amber-bg); color: var(--amber); border-radius: 999px; padding: 1px 8px; font-weight: 500; }
     .hint-row { font-size: 0.82rem; color: var(--ink3); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .hint-row strong { color: var(--ink); font-style: italic; font-weight: 400; font-family: "Fraunces", serif; }
     .tag { font-size: 0.72rem; padding: 2px 9px; border-radius: 999px; font-weight: 500; }
@@ -53,12 +61,13 @@
     .score-row { font-size: 0.82rem; color: var(--ink3); margin-top: 1rem; }
     .score-row span { font-weight: 500; color: var(--ink); }
     .summary { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem 1.5rem; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
-    .summary .medal { font-size: 3rem; margin-bottom: 0.5rem; }
     .summary h2 { font-family: "Fraunces", serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.25rem; }
     .summary .big { font-size: 3rem; font-weight: 600; color: var(--accent); font-family: "Fraunces", serif; line-height: 1; margin: 0.5rem 0; }
-    .summary .dots { font-size: 1.4rem; margin: 0.75rem 0; letter-spacing: 2px; }
+    .summary .dots { font-size: 1.2rem; margin: 0.75rem 0; letter-spacing: 2px; line-height: 1.8; }
     .summary p { font-size: 0.9rem; color: var(--ink2); margin-bottom: 0.5rem; }
-    .summary .time-note { font-size: 0.8rem; color: var(--ink3); margin-bottom: 1.25rem; }
+    .summary .sub { font-size: 0.8rem; color: var(--ink3); margin-bottom: 1.25rem; }
+    .review-summary { background: var(--amber-bg); border: 1px solid #e8c87a; border-radius: 12px; padding: 1rem; margin: 1rem 0; font-size: 0.85rem; color: var(--amber); }
+    .review-summary strong { display: block; font-size: 1rem; margin-bottom: 4px; color: var(--ink); }
     .done-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem 1.5rem; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
     .done-card h2 { font-family: "Fraunces", serif; font-size: 1.4rem; margin-bottom: 0.5rem; }
     .done-card p { font-size: 0.9rem; color: var(--ink2); margin-bottom: 0.5rem; }
@@ -599,55 +608,140 @@ const ALL = [
   { before:"Nosotros", answer:"nos confundimos", after:"con el cambio de horario.", hint:"confundirse (to get confused)", tag:"ir" },
 ];
 
-const PER_DAY = 10;
+const PER_DAY_NEW = 10;
 const TAG_LABELS = { ar:"-ar", er:"-er", ir:"-ir", irreg:"irregular" };
 
+// --- Storage helpers ---
 function getDailySeed() { const d = new Date(); return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(); }
 function seededShuffle(arr, seed) {
   const a=[...arr]; let s=seed;
   for(let i=a.length-1;i>0;i--){s=(s*1664525+1013904223)&0xffffffff;const j=Math.abs(s)%(i+1);[a[i],a[j]]=[a[j],a[i]];}
   return a;
 }
-function getTodayKey(){return new Date().toISOString().slice(0,10);}
-function getDateLabel(){return new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"});}
-function formatTime(s){return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,"0")}`;}
-function loadStreak(){try{return JSON.parse(localStorage.getItem("streak")||"null")||{count:0,lastCompleted:null};}catch{return{count:0,lastCompleted:null};}}
-function saveStreak(s){try{localStorage.setItem("streak",JSON.stringify(s));}catch{}}
-function loadTodayState(){try{const s=JSON.parse(localStorage.getItem("todayState")||"null");if(s&&s.dateKey===getTodayKey())return s;return null;}catch{return null;}}
-function saveTodayState(s){try{localStorage.setItem("todayState",JSON.stringify(s));}catch{}}
+function getTodayKey() { return new Date().toISOString().slice(0,10); }
+function getDateLabel() { return new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"}); }
+function formatTime(s) { return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,"0")}`; }
 
-let exercises=[],current=0,score=0,checked=false,results=[];
-let seconds=0,timerInterval=null,streak={count:0,lastCompleted:null};
+function loadStreak() { try { return JSON.parse(localStorage.getItem("streak")||"null")||{count:0,lastCompleted:null}; } catch { return {count:0,lastCompleted:null}; } }
+function saveStreak(s) { try { localStorage.setItem("streak",JSON.stringify(s)); } catch {} }
+function loadTodayState() { try { const s=JSON.parse(localStorage.getItem("todayState")||"null"); if(s&&s.dateKey===getTodayKey()) return s; return null; } catch { return null; } }
+function saveTodayState(s) { try { localStorage.setItem("todayState",JSON.stringify(s)); } catch {} }
 
-function startTimer(){timerInterval=setInterval(()=>{seconds++;const el=document.getElementById("timer");if(el)el.textContent=formatTime(seconds);},1000);}
-function stopTimer(){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
+// --- Review pile ---
+// Structure: { [sentenceKey]: { wrongCount, correctStreak, lastSeen } }
+// sentenceKey = before+answer (unique enough)
+function makeKey(ex) { return (ex.before+ex.answer).split(" ").join(""); }
+function loadReviewPile() { try { return JSON.parse(localStorage.getItem("reviewPile")||"{}"); } catch { return {}; } }
+function saveReviewPile(p) { try { localStorage.setItem("reviewPile",JSON.stringify(p)); } catch {} }
 
-function init(){
-  streak=loadStreak();
-  const saved=loadTodayState();
-  if(saved&&saved.completed){showDone(saved);return;}
-  exercises=seededShuffle(ALL,getDailySeed()).slice(0,PER_DAY);
-  if(saved){current=saved.current||0;score=saved.score||0;results=saved.results||[];seconds=saved.seconds||0;}
-  else{current=0;score=0;results=[];seconds=0;}
-  startTimer();render();
+function addToReviewPile(ex) {
+  const pile = loadReviewPile();
+  const k = makeKey(ex);
+  if (pile[k]) {
+    pile[k].wrongCount = (pile[k].wrongCount||0) + 1;
+    pile[k].correctStreak = 0;
+    pile[k].lastSeen = getTodayKey();
+  } else {
+    pile[k] = { wrongCount:1, correctStreak:0, lastSeen:getTodayKey(), ex };
+  }
+  saveReviewPile(pile);
 }
 
-function render(){
-  const c=exercises[current];
-  const pct=(current/exercises.length)*100;
-  const sl=streak.count>0?`${streak.count} day streak \uD83D\uDD25`:"No streak yet";
-  document.getElementById("app").innerHTML=`
+function markReviewCorrect(ex) {
+  const pile = loadReviewPile();
+  const k = makeKey(ex);
+  if (!pile[k]) return;
+  pile[k].correctStreak = (pile[k].correctStreak||0) + 1;
+  pile[k].lastSeen = getTodayKey();
+  // Remove from pile after 2 consecutive correct answers
+  if (pile[k].correctStreak >= 2) {
+    delete pile[k];
+  }
+  saveReviewPile(pile);
+}
+
+function getReviewExercises() {
+  const pile = loadReviewPile();
+  return Object.values(pile).map(item => ({ ...item.ex, isReview:true }));
+}
+
+function getReviewCount() { return Object.keys(loadReviewPile()).length; }
+
+// --- Build today's exercise list ---
+// Excludes already-seen sentences (from pool) to avoid overlap with review pile
+function buildExerciseList() {
+  const pile = loadReviewPile();
+  const pileKeys = new Set(Object.keys(pile));
+  // Filter pool to exclude sentences already in review pile
+  const freshPool = ALL.filter(ex => !pileKeys.has(makeKey(ex)));
+  // Pick 10 fresh sentences for today using date seed
+  const todayFresh = seededShuffle(freshPool, getDailySeed()).slice(0, PER_DAY_NEW);
+  // Get all review sentences
+  const reviewExs = getReviewExercises();
+  // Interleave: start with a review if any, then alternate new/review
+  // Actually: show all review first (so they never get skipped), then new
+  // Shuffle review pile so it doesn't always appear in same order
+  const shuffledReview = seededShuffle(reviewExs, getDailySeed() + 1);
+  return [...shuffledReview, ...todayFresh];
+}
+
+// --- State ---
+let exercises=[], current=0, score=0, checked=false, results=[];
+let seconds=0, timerInterval=null, streak={count:0,lastCompleted:null};
+let newCount=0, reviewCount=0;
+
+function startTimer() { timerInterval=setInterval(()=>{ seconds++; const el=document.getElementById("timer"); if(el) el.textContent=formatTime(seconds); },1000); }
+function stopTimer() { if(timerInterval){clearInterval(timerInterval);timerInterval=null;} }
+
+function init() {
+  streak = loadStreak();
+  const saved = loadTodayState();
+  if (saved && saved.completed) { showDone(saved); return; }
+  exercises = buildExerciseList();
+  reviewCount = exercises.filter(e=>e.isReview).length;
+  newCount = exercises.filter(e=>!e.isReview).length;
+  if (saved) {
+    current=saved.current||0; score=saved.score||0;
+    results=saved.results||[]; seconds=saved.seconds||0;
+  } else {
+    current=0; score=0; results=[]; seconds=0;
+  }
+  startTimer(); render();
+}
+
+function render() {
+  const c = exercises[current];
+  const isReview = !!c.isReview;
+  const totalDone = current;
+  const totalEx = exercises.length;
+  const pct = (totalDone/totalEx)*100;
+  const sl = streak.count>0 ? `${streak.count} day streak \uD83D\uDD25` : "No streak yet";
+  const rCount = getReviewCount();
+  const reviewBadgeClass = rCount>0 ? "badge review-badge" : "badge review-badge empty";
+  const reviewBadgeText = rCount>0 ? `\uD83D\uDCCB ${rCount} to review` : "\u2705 Review pile empty";
+
+  document.getElementById("app").innerHTML = `
     <div class="meta-row">
-      <span class="streak-badge">${sl}</span>
+      <span class="badge streak-badge">${sl}</span>
+      <span class="${reviewBadgeClass}">${reviewBadgeText}</span>
       <span class="timer-badge" id="timer">${formatTime(seconds)}</span>
     </div>
-    <div class="progress-wrap"><div class="progress-fill" style="width:${pct}%"></div></div>
-    <div class="card">
-      <div class="q-count">${getDateLabel()} &middot; ${current+1} of ${exercises.length}</div>
+    <div class="progress-wrap">
+      <div class="progress-fill ${isReview?"review":"new"}" style="width:${pct}%"></div>
+    </div>
+    <div class="progress-legend">
+      <span><span class="legend-dot" style="background:var(--accent)"></span>${newCount} new</span>
+      ${reviewCount>0?`<span><span class="legend-dot" style="background:var(--amber)"></span>${reviewCount} review</span>`:""}
+    </div>
+    <div class="card ${isReview?"is-review":""}">
+      <div class="q-count">
+        ${getDateLabel()} &middot; ${current+1} of ${totalEx}
+        ${isReview ? "<span class=\"review-pill\">\uD83D\uDD04 Review</span>" : ""}
+      </div>
       <div class="hint-row">Fill in: <strong>${c.hint}</strong> <span class="tag tag-${c.tag}">${TAG_LABELS[c.tag]}</span></div>
       <div class="sentence">
         <span>${c.before}</span>
-        <input class="blank" id="inp" type="text" placeholder="___" autocomplete="off" autocorrect="off" spellcheck="false" />
+        <input class="blank" id="inp" type="text" placeholder="___" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" />
         <span>${c.after}</span>
       </div>
       <div class="feedback" id="fb"></div>
@@ -658,89 +752,143 @@ function render(){
     </div>
     <div class="score-row" id="sc">Score: <span>${score}</span> / ${current}</div>
   `;
-  const inp=document.getElementById("inp");
-  inp.addEventListener("keydown",e=>{if(e.key==="Enter")check();});
-  inp.focus();checked=false;
+  const inp = document.getElementById("inp");
+  inp.addEventListener("keydown", e=>{ if(e.key==="Enter") check(); });
+  inp.focus(); checked=false;
 }
 
-function check(){
-  if(checked)return;
-  const c=exercises[current];
-  const inp=document.getElementById("inp");
-  const val=inp.value.trim().toLowerCase();
-  checked=true;
-  const ok=val===c.answer;
-  inp.classList.add(ok?"correct":"wrong");inp.disabled=true;
-  const fb=document.getElementById("fb");
-  fb.className="feedback "+(ok?"correct":"wrong");
-  fb.textContent=ok?"\u00a1Correcto! \u2713":`Not quite \u2014 the answer is: ${c.answer}`;
-  if(ok)score++;
-  results.push({correct:ok,answer:c.answer,given:val});
+function check() {
+  if (checked) return;
+  const c = exercises[current];
+  const inp = document.getElementById("inp");
+  const val = inp.value.trim().toLowerCase();
+  checked = true;
+  const ok = val.toLowerCase() === c.answer.toLowerCase();
+  inp.classList.add(ok?"correct":"wrong"); inp.disabled=true;
+  const fb = document.getElementById("fb");
+
+  if (ok) {
+    score++;
+    fb.className="feedback correct";
+    if (c.isReview) {
+      markReviewCorrect(c);
+      const remaining = getReviewCount();
+      fb.textContent = remaining===0
+        ? "\u00a1Correcto! Removed from review pile \u2705"
+        : "\u00a1Correcto! One step closer to clearing review \u2705";
+    } else {
+      fb.textContent = "\u00a1Correcto! \u2713";
+    }
+  } else {
+    fb.className="feedback wrong";
+    if (c.isReview) {
+      addToReviewPile(c);
+      fb.textContent = `Not quite \u2014 the answer is: ${c.answer}. Staying in review pile.`;
+    } else {
+      addToReviewPile(c);
+      fb.textContent = `Not quite \u2014 the answer is: ${c.answer}. Added to review pile.`;
+    }
+  }
+
+  results.push({correct:ok, answer:c.answer, given:val, isReview:!!c.isReview});
   document.getElementById("sc").innerHTML=`Score: <span>${score}</span> / ${current+1}`;
   document.getElementById("btns").innerHTML=`<button class="primary" onclick="next()">${current+1<exercises.length?"Next \u2192":"See results \u2192"}</button>`;
   saveTodayState({dateKey:getTodayKey(),current:current+1,score,results,seconds,completed:false});
 }
 
-function skip(){
-  if(checked)return;
-  const c=exercises[current];
-  const inp=document.getElementById("inp");
-  checked=true;inp.value=c.answer;inp.classList.add("wrong");inp.disabled=true;
-  const fb=document.getElementById("fb");
-  fb.className="feedback wrong";fb.textContent=`Answer: ${c.answer}`;
-  results.push({correct:false,answer:c.answer,given:""});
+function skip() {
+  if (checked) return;
+  const c = exercises[current];
+  const inp = document.getElementById("inp");
+  checked=true; inp.value=c.answer; inp.classList.add("wrong"); inp.disabled=true;
+  const fb = document.getElementById("fb");
+  fb.className="feedback wrong";
+  fb.textContent=`Answer: ${c.answer}. ${c.isReview?"Staying in review pile.":"Added to review pile."}`;
+  if (c.isReview) { addToReviewPile(c); } else { addToReviewPile(c); }
+  results.push({correct:false, answer:c.answer, given:"", isReview:!!c.isReview});
   document.getElementById("sc").innerHTML=`Score: <span>${score}</span> / ${current+1}`;
   document.getElementById("btns").innerHTML=`<button class="primary" onclick="next()">${current+1<exercises.length?"Next \u2192":"See results \u2192"}</button>`;
   saveTodayState({dateKey:getTodayKey(),current:current+1,score,results,seconds,completed:false});
 }
 
-function next(){current++;if(current>=exercises.length)showSummary();else render();}
+function next() { current++; if(current>=exercises.length) showSummary(); else render(); }
 
-function showSummary(){
+function showSummary() {
   stopTimer();
-  const pct=Math.round((score/exercises.length)*100);
-  const medal=pct===100?"\uD83E\uDD47":pct>=70?"\uD83E\uDD48":"\uD83E\uDD49";
-  const msg=pct===100?"\u00a1Perfecto! Absolutely flawless!":pct>=80?"\u00a1Muy bien! Great work!":pct>=60?"\u00a1Bien! Solid effort!":"\u00a1Sigue adelante! Keep going!";
-  const todayKey=getTodayKey();
-  const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
-  const yKey=yesterday.toISOString().slice(0,10);
-  let newCount=streak.lastCompleted===yKey?streak.count+1:(streak.lastCompleted===todayKey?streak.count:1);
-  saveStreak({count:newCount,lastCompleted:todayKey});
+  const pct = Math.round((score/exercises.length)*100);
+  const medal = pct===100?"\uD83E\uDD47":pct>=70?"\uD83E\uDD48":"\uD83E\uDD49";
+  const msg = pct===100?"\u00a1Perfecto! Flawless!":pct>=80?"\u00a1Muy bien! Great work!":pct>=60?"\u00a1Bien! Solid effort!":"\u00a1Sigue adelante! Keep going!";
+  const todayKey = getTodayKey();
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+  const yKey = yesterday.toISOString().slice(0,10);
+  let newStreak = streak.lastCompleted===yKey ? streak.count+1 : (streak.lastCompleted===todayKey?streak.count:1);
+  saveStreak({count:newStreak, lastCompleted:todayKey});
   saveTodayState({dateKey:todayKey,current,score,results,seconds,completed:true});
-  const dots=results.map(r=>`<span>${r.correct?"\u2705":"\u274C"}</span>`).join("");
+
+  const reviewResults = results.filter(r=>r.isReview);
+  const newResults = results.filter(r=>!r.isReview);
+  const reviewCorrect = reviewResults.filter(r=>r.correct).length;
+  const newCorrect = newResults.filter(r=>r.correct).length;
+  const finalPileSize = getReviewCount();
+
+  const dots = results.map(r=>{
+    if(r.isReview) return r.correct?"<span title=\"review\">\uD83D\uDFE1</span>":"<span title=\"review\">\uD83D\uDD34</span>";
+    return r.correct?"<span>\u2705</span>":"<span>\u274C</span>";
+  }).join("");
+
+  const reviewSection = reviewResults.length>0 ? `
+    <div class="review-summary">
+      <strong>Review pile</strong>
+      ${reviewCorrect}/${reviewResults.length} review sentences correct &middot;
+      ${finalPileSize>0 ? `${finalPileSize} sentence${finalPileSize===1?"":"s"} still to review` : "Review pile cleared! \uD83C\uDF89"}
+    </div>` : "";
+
   document.getElementById("app").innerHTML=`
     <div class="summary">
-      <div class="medal">${medal}</div>
+      <div style="font-size:2.5rem;margin-bottom:0.3rem;">${medal}</div>
       <h2>Challenge complete!</h2>
       <div class="big">${score}/${exercises.length}</div>
       <div class="dots">${dots}</div>
+      <div style="font-size:0.72rem;color:var(--ink3);margin-bottom:0.75rem;">\uD83D\uDFE1 = review &nbsp; \u2705 = new correct &nbsp; \u274C = new wrong &nbsp; \uD83D\uDD34 = review wrong</div>
+      ${reviewSection}
       <p>${msg}</p>
-      <p class="time-note">Time: ${formatTime(seconds)} &middot; ${newCount} day streak \uD83D\uDD25</p>
-      <button class="primary" onclick="playAgain()">Play again with new sentences</button>
+      <p class="sub">Time: ${formatTime(seconds)} &middot; ${newStreak} day streak \uD83D\uDD25</p>
+      <p class="sub">${newCorrect}/${newResults.length} new &middot; ${reviewCorrect}/${reviewResults.length} review</p>
+      <button class="primary" onclick="playAgain()" style="margin-top:0.75rem;">Practice more</button>
     </div>
   `;
 }
 
-function showDone(saved){
-  const dots=(saved.results||[]).map(r=>`<span>${r.correct?"\u2705":"\u274C"}</span>`).join("");
+function showDone(saved) {
+  const finalPileSize = getReviewCount();
+  const dots = (saved.results||[]).map(r=>{
+    if(r.isReview) return r.correct?"<span>\uD83D\uDFE1</span>":"<span>\uD83D\uDD34</span>";
+    return r.correct?"<span>\u2705</span>":"<span>\u274C</span>";
+  }).join("");
   document.getElementById("app").innerHTML=`
     <div class="done-card">
       <div style="font-size:2.5rem;margin-bottom:0.5rem;">\uD83C\uDF2E</div>
       <h2>Already done today!</h2>
-      <div class="big">${saved.score}/${PER_DAY}</div>
-      <div style="font-size:1.4rem;margin:0.75rem 0;letter-spacing:2px;">${dots}</div>
+      <div class="big">${saved.score}/${saved.results?saved.results.length:PER_DAY_NEW}</div>
+      <div style="font-size:1.2rem;margin:0.75rem 0;letter-spacing:2px;line-height:1.8;">${dots}</div>
       <p>Time: ${formatTime(saved.seconds||0)}</p>
+      ${finalPileSize>0?`<p style="color:var(--amber);font-weight:500;">${finalPileSize} sentence${finalPileSize===1?"":"s"} in your review pile for tomorrow.</p>`:"<p style=\"color:var(--green);font-weight:500;\">Review pile clear! \u2705</p>"}
       <p style="margin-bottom:1.25rem;">Come back tomorrow for a fresh set.</p>
-      <button class="primary" onclick="playAgain()">Practice again anyway</button>
+      <button class="primary" onclick="playAgain()">Practice more today</button>
     </div>
   `;
 }
 
-function playAgain(){
+function playAgain() {
   stopTimer();
-  exercises=seededShuffle(ALL,Date.now()).slice(0,PER_DAY);
-  current=0;score=0;results=[];seconds=0;
-  startTimer();render();
+  // For extra practice: pick 10 random fresh sentences (don't affect review pile)
+  const pile = loadReviewPile();
+  const pileKeys = new Set(Object.keys(pile));
+  const freshPool = ALL.filter(ex=>!pileKeys.has(makeKey(ex)));
+  exercises = seededShuffle(freshPool, Date.now()).slice(0, 10);
+  reviewCount=0; newCount=exercises.length;
+  current=0; score=0; results=[]; seconds=0;
+  startTimer(); render();
 }
 
 init();
