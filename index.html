@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Spanish Challenge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f0e8;
+      --card: #fffdf8;
+      --ink: #1a1208;
+      --ink2: #6b5c3e;
+      --ink3: #a8956e;
+      --accent: #c8440f;
+      --accent-light: #f5ddd4;
+      --green: #2d6a4f;
+      --green-light: #d8f0e6;
+      --red: #9b1c1c;
+      --red-light: #fde8e8;
+      --border: #e2d9c8;
+      --tag-ar: #e8f0fb; --tag-ar-t: #1a4a8a;
+      --tag-er: #ede8fb; --tag-er-t: #4a2d9b;
+      --tag-ir: #e8f5ee; --tag-ir-t: #1a6640;
+      --tag-irreg: #fdf3e0; --tag-irreg-t: #7a4a0a;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    header h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+
+    header h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    header p {
+      font-size: 0.875rem;
+      color: var(--ink3);
+      margin-top: 0.4rem;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 560px;
+      animation: fadeUp 0.5s ease both 0.1s;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.8rem;
+      color: var(--ink3);
+    }
+
+    .streak-badge {
+      background: var(--tag-irreg);
+      color: var(--tag-irreg-t);
+      border-radius: 999px;
+      padding: 3px 12px;
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+
+    .timer-badge {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px 12px;
+      font-size: 0.78rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink2);
+    }
+
+    .progress-wrap {
+      height: 4px;
+      background: var(--border);
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 4px;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width 0.4s cubic-bezier(.4,0,.2,1);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+
+    .q-count {
+      font-size: 0.78rem;
+      color: var(--ink3);
+      margin-bottom: 0.75rem;
+    }
+
+    .hint-row {
+      font-size: 0.82rem;
+      color: var(--ink3);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .hint-row strong {
+      color: var(--ink);
+      font-style: italic;
+      font-weight: 400;
+      font-family: 'Fraunces', serif;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-weight: 500;
+    }
+    .tag-ar { background: var(--tag-ar); color: var(--tag-ar-t); }
+    .tag-er { background: var(--tag-er); color: var(--tag-er-t); }
+    .tag-ir { background: var(--tag-ir); color: var(--tag-ir-t); }
+    .tag-irreg { background: var(--tag-irreg); color: var(--tag-irreg-t); }
+
+    .sentence {
+      font-size: 1.15rem;
+      line-height: 2.2;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .blank {
+      border: none;
+      border-bottom: 2px solid var(--accent);
+      background: transparent;
+      font-size: 1.15rem;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      outline: none;
+      min-width: 90px;
+      text-align: center;
+      padding: 0 4px;
+      transition: border-color 0.2s;
+    }
+    .blank:focus { border-bottom-color: #8b2d06; }
+    .blank.correct { border-bottom-color: var(--green); color: var(--green); }
+    .blank.wrong { border-bottom-color: var(--red); color: var(--red); }
+    .blank:disabled { cursor: default; }
+
+    .feedback {
+      font-size: 0.82rem;
+      margin-top: 0.75rem;
+      min-height: 1.2em;
+      font-weight: 500;
+    }
+    .feedback.correct { color: var(--green); }
+    .feedback.wrong { color: var(--red); }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: 10px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--ink2);
+    }
+    button:hover { background: var(--bg); }
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    button.primary:hover { background: #a83509; border-color: #a83509; }
+    button:active { transform: scale(0.97); }
+
+    .score-row {
+      font-size: 0.82rem;
+      color: var(--ink3);
+      margin-top: 1rem;
+    }
+    .score-row span { font-weight: 500; color: var(--ink); }
+
+    .summary {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .summary .medal { font-size: 3rem; margin-bottom: 0.5rem; }
+    .summary h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .summary .big { font-size: 3rem; font-weight: 600; color: var(--accent); font-family: 'Fraunces', serif; line-height: 1; margin: 0.5rem 0; }
+    .summary .dots { font-size: 1.4rem; margin: 0.75rem 0; letter-spacing: 2px; }
+    .summary p { font-size: 0.9rem; color: var(--ink2); margin-bottom: 0.5rem; }
+    .summary .time-note { font-size: 0.8rem; color: var(--ink3); margin-bottom: 1.25rem; }
+
+    .done-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .done-card h2 { font-family: 'Fraunces', serif; font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .done-card p { font-size: 0.9rem; color: var(--ink2); margin-bottom: 0.5rem; }
+    .done-card .big { font-size: 2.5rem; font-weight: 600; color: var(--accent); font-family: 'Fraunces', serif; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+    .pop { animation: pop 0.3s ease; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Daily <em>Spanish</em> Challenge</h1>
+  <p>Pretérito indefinido · Mexican Spanish</p>
+</header>
+
+<div class="app" id="app">
+  <p style="color:var(--ink3);font-size:0.9rem;">Loading...</p>
+</div>
+
+<script>
+const ALL = [
+  { before:"Ayer yo", answer:"compré", after:"chiles en la tianguis.", hint:"comprar (to buy)", tag:"ar" },
+  { before:"Mi hermano", answer:"llegó", after:"tarde a la cena.", hint:"llegar (to arrive)", tag:"ar" },
+  { before:"Nosotros", answer:"pudimos", after:"ver el volcán desde aquí.", hint:"poder (to be able to)", tag:"irreg" },
+  { before:"¿Tú", answer:"dormiste", after:"bien anoche?", hint:"dormir (to sleep)", tag:"ir" },
+  { before:"Ellos", answer:"trajeron", after:"pozole a la fiesta.", hint:"traer (to bring)", tag:"irreg" },
+  { before:"Yo", answer:"empecé", after:"a estudiar español el año pasado.", hint:"empezar (to start)", tag:"ar" },
+  { before:"Usted", answer:"pidió", after:"enchiladas verdes.", hint:"pedir (to order/ask for)", tag:"ir" },
+  { before:"Mi mamá", answer:"puso", after:"la mesa para el desayuno.", hint:"poner (to put/set)", tag:"irreg" },
+  { before:"Nosotros", answer:"caminamos", after:"por el centro histórico toda la tarde.", hint:"caminar (to walk)", tag:"ar" },
+  { before:"Ella", answer:"dijo", after:"que no quería más picante.", hint:"decir (to say/tell)", tag:"irreg" },
+  { before:"¿Ustedes", answer:"visitaron", after:"las pirámides de Teotihuacán?", hint:"visitar (to visit)", tag:"ar" },
+  { before:"Yo", answer:"perdí", after:"mi cartera en el metro.", hint:"perder (to lose)", tag:"er" },
+  { before:"Él", answer:"quiso", after:"probar el mole negro.", hint:"querer (to want)", tag:"irreg" },
+  { before:"Los chicos", answer:"corrieron", after:"en el parque esta mañana.", hint:"correr (to run)", tag:"er" },
+  { before:"Tú", answer:"abriste", after:"la ventana porque hacía calor.", hint:"abrir (to open)", tag:"ir" },
+  { before:"Mi papá", answer:"manejó", after:"hasta Oaxaca el fin de semana.", hint:"manejar (to drive)", tag:"ar" },
+  { before:"Yo no", answer:"entendí", after:"lo que dijo el vendedor.", hint:"entender (to understand)", tag:"er" },
+  { before:"Ella", answer:"vino", after:"desde Guadalajara para la boda.", hint:"venir (to come)", tag:"irreg" },
+  { before:"Nosotros", answer:"escuchamos", after:"música de mariachi en la plaza.", hint:"escuchar (to listen to)", tag:"ar" },
+  { before:"Él", answer:"fue", after:"el mejor estudiante de la clase.", hint:"ser (to be)", tag:"irreg" },
+  { before:"Ayer yo", answer:"me desperté", after:"muy tarde.", hint:"despertarse (to wake up)", tag:"ar" },
+  { before:"Mi amiga", answer:"cocinó", after:"chiles rellenos para toda la familia.", hint:"cocinar (to cook)", tag:"ar" },
+  { before:"Nosotros", answer:"conocimos", after:"a unos turistas en el museo.", hint:"conocer (to meet/know)", tag:"er" },
+  { before:"¿Tú", answer:"leíste", after:"el menú antes de pedir?", hint:"leer (to read)", tag:"er" },
+  { before:"Yo", answer:"me sentí", after:"mal después de comer tanto.", hint:"sentirse (to feel)", tag:"ir" },
+  { before:"Las chicas", answer:"bailaron", after:"toda la noche en la fiesta.", hint:"bailar (to dance)", tag:"ar" },
+  { before:"Yo", answer:"anduve", after:"por el mercado dos horas.", hint:"andar (to walk/go)", tag:"irreg" },
+  { before:"Mi papá", answer:"rompió", after:"el vaso sin querer.", hint:"romper (to break)", tag:"er" },
+  { before:"Nosotros", answer:"encontramos", after:"un restaurante increíble en Coyoacán.", hint:"encontrar (to find)", tag:"ar" },
+  { before:"El músico", answer:"tocó", after:"la guitarra en el zócalo.", hint:"tocar (to play an instrument)", tag:"ar" },
+  { before:"Mi jefe", answer:"dio", after:"las gracias a todo el equipo.", hint:"dar (to give)", tag:"irreg" },
+  { before:"Ella", answer:"tradujo", after:"el documento al inglés.", hint:"traducir (to translate)", tag:"irreg" },
+  { before:"Ellos", answer:"construyeron", after:"una casa nueva en Puebla.", hint:"construir (to build)", tag:"ir" },
+  { before:"Mi hermana", answer:"se graduó", after:"de la universidad en mayo.", hint:"graduarse (to graduate)", tag:"ar" },
+  { before:"¿Tú", answer:"oíste", after:"el temblor anoche?", hint:"oír (to hear)", tag:"irreg" },
+  { before:"Yo", answer:"estuve", after:"enfermo dos días la semana pasada.", hint:"estar (to be)", tag:"irreg" },
+  { before:"El chef", answer:"preparó", after:"un mole especial para la boda.", hint:"preparar (to prepare)", tag:"ar" },
+  { before:"Tú", answer:"aprendiste", after:"tres palabras nuevas ayer.", hint:"aprender (to learn)", tag:"er" },
+  { before:"Ella", answer:"mintió", after:"sobre su edad.", hint:"mentir (to lie)", tag:"ir" },
+  { before:"Yo", answer:"seguí", after:"las instrucciones del mapa.", hint:"seguir (to follow)", tag:"ir" },
+  { before:"Mis abuelos", answer:"vivieron", after:"en Veracruz por veinte años.", hint:"vivir (to live)", tag:"ir" },
+  { before:"Tú", answer:"te reíste", after:"mucho con el chiste.", hint:"reírse (to laugh)", tag:"ir" },
+  { before:"Yo", answer:"me caí", after:"en las escaleras del metro.", hint:"caerse (to fall)", tag:"er" },
+  { before:"Nosotros", answer:"resolvimos", after:"el problema juntos.", hint:"resolver (to solve)", tag:"er" },
+  { before:"Nosotros", answer:"subimos", after:"al cerro para ver la ciudad.", hint:"subir (to go up/climb)", tag:"ir" },
+  { before:"Yo", answer:"supuse", after:"que llegarías tarde.", hint:"suponer (to suppose)", tag:"irreg" },
+  { before:"Usted", answer:"recibió", after:"un regalo muy bonito.", hint:"recibir (to receive)", tag:"ir" },
+  { before:"Él", answer:"condujo", after:"por la autopista tres horas.", hint:"conducir (to drive)", tag:"irreg" },
+  { before:"¿Tú", answer:"te probaste", after:"los zapatos antes de comprarlos?", hint:"probarse (to try on)", tag:"ar" },
+  { before:"Yo", answer:"tuve", after:"que trabajar el sábado.", hint:"tener (to have/must)", tag:"irreg" },
+  { before:"Ustedes", answer:"bebieron", after:"horchata en el restaurante.", hint:"beber (to drink)", tag:"er" },
+  { before:"Mi abuela", answer:"hizo", after:"tamales para la fiesta.", hint:"hacer (to make/do)", tag:"irreg" },
+  { before:"Ayer nosotros", answer:"salimos", after:"de casa muy temprano.", hint:"salir (to leave)", tag:"irreg" },
+  { before:"Él", answer:"escribió", after:"un mensaje a su amigo.", hint:"escribir (to write)", tag:"ir" },
+  { before:"Yo", answer:"fui", after:"al mercado esta mañana.", hint:"ir (to go)", tag:"irreg" },
+  { before:"Tú", answer:"viste", after:"la película anoche, ¿verdad?", hint:"ver (to see/watch)", tag:"irreg" },
+  { before:"Ellos", answer:"jugaron", after:"fútbol en la calle.", hint:"jugar (to play)", tag:"ar" },
+  { before:"La señora", answer:"pagó", after:"la cuenta con efectivo.", hint:"pagar (to pay)", tag:"ar" },
+  { before:"Yo", answer:"olvidé", after:"mi paraguas en el camión.", hint:"olvidar (to forget)", tag:"ar" },
+  { before:"Nosotros", answer:"comimos", after:"birria en Tlaquepaque.", hint:"comer (to eat)", tag:"er" },
+  { before:"Él", answer:"calentó", after:"las tortillas en el comal.", hint:"calentar (to heat up)", tag:"ar" },
+];
+
+const PER_DAY = 10;
+const TAG_LABELS = { ar:"-ar", er:"-er", ir:"-ir", irreg:"irregular" };
+
+function getDailySeed() {
+  const d = new Date();
+  return d.getFullYear() * 10000 + (d.getMonth()+1) * 100 + d.getDate();
+}
+
+function seededShuffle(arr, seed) {
+  const a = [...arr]; let s = seed;
+  for (let i = a.length-1; i > 0; i--) {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    const j = Math.abs(s) % (i+1);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getTodayKey() {
+  return new Date().toISOString().slice(0,10);
+}
+
+function getDateLabel() {
+  return new Date().toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+}
+
+function formatTime(s) {
+  return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
+}
+
+function loadStreak() {
+  try { return JSON.parse(localStorage.getItem('streak') || 'null') || { count:0, lastCompleted:null }; }
+  catch { return { count:0, lastCompleted:null }; }
+}
+
+function saveStreak(s) {
+  try { localStorage.setItem('streak', JSON.stringify(s)); } catch {}
+}
+
+function loadTodayState() {
+  try {
+    const s = JSON.parse(localStorage.getItem('todayState') || 'null');
+    if (s && s.dateKey === getTodayKey()) return s;
+    return null;
+  } catch { return null; }
+}
+
+function saveTodayState(s) {
+  try { localStorage.setItem('todayState', JSON.stringify(s)); } catch {}
+}
+
+let exercises=[], current=0, score=0, checked=false, results=[];
+let seconds=0, timerInterval=null, streak={ count:0, lastCompleted:null };
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const el = document.getElementById('timer');
+    if (el) el.textContent = formatTime(seconds);
+  }, 1000);
+}
+
+function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval=null; } }
+
+function init() {
+  streak = loadStreak();
+  const saved = loadTodayState();
+
+  if (saved && saved.completed) { showDone(saved); return; }
+
+  exercises = seededShuffle(ALL, getDailySeed()).slice(0, PER_DAY);
+
+  if (saved) {
+    current = saved.current || 0;
+    score = saved.score || 0;
+    results = saved.results || [];
+    seconds = saved.seconds || 0;
+  } else {
+    current=0; score=0; results=[]; seconds=0;
+  }
+
+  startTimer();
+  render();
+}
+
+function render() {
+  const c = exercises[current];
+  const pct = (current / exercises.length) * 100;
+  const sl = streak.count > 0 ? `${streak.count} day streak 🔥` : 'No streak yet';
+
+  document.getElementById('app').innerHTML = `
+    <div class="meta-row">
+      <span class="streak-badge">${sl}</span>
+      <span class="timer-badge" id="timer">${formatTime(seconds)}</span>
+    </div>
+    <div class="progress-wrap"><div class="progress-fill" id="prog" style="width:${pct}%"></div></div>
+    <div class="card" id="q-card">
+      <div class="q-count">${getDateLabel()} · ${current+1} of ${exercises.length}</div>
+      <div class="hint-row">Fill in: <strong>${c.hint}</strong> <span class="tag tag-${c.tag}">${TAG_LABELS[c.tag]}</span></div>
+      <div class="sentence">
+        <span>${c.before}</span>
+        <input class="blank" id="inp" type="text" placeholder="___" autocomplete="off" autocorrect="off" spellcheck="false" />
+        <span>${c.after}</span>
+      </div>
+      <div class="feedback" id="fb"></div>
+    </div>
+    <div class="btn-row" id="btns">
+      <button class="primary" onclick="check()">Check answer</button>
+      <button onclick="skip()">Show answer</button>
+    </div>
+    <div class="score-row" id="sc">Score: <span>${score}</span> / ${current}</div>
+  `;
+
+  const inp = document.getElementById('inp');
+  inp.addEventListener('keydown', e => { if (e.key==='Enter') check(); });
+  inp.focus();
+  checked = false;
+}
+
+function check() {
+  if (checked) return;
+  const c = exercises[current];
+  const inp = document.getElementById('inp');
+  const val = inp.value.trim().toLowerCase();
+  checked = true;
+  const ok = val === c.answer;
+  inp.classList.add(ok ? 'correct' : 'wrong');
+  inp.disabled = true;
+  const fb = document.getElementById('fb');
+  fb.className = 'feedback ' + (ok ? 'correct' : 'wrong');
+  fb.textContent = ok ? '¡Correcto! ✓' : `Not quite — the answer is: ${c.answer}`;
+  if (ok) score++;
+  results.push({ correct:ok, answer:c.answer, given:val });
+  document.getElementById('sc').innerHTML = `Score: <span>${score}</span> / ${current+1}`;
+  document.getElementById('btns').innerHTML = `<button class="primary" onclick="next()">${current+1 < exercises.length ? 'Next →' : 'See results →'}</button>`;
+  saveTodayState({ dateKey:getTodayKey(), current:current+1, score, results, seconds, completed:false });
+}
+
+function skip() {
+  if (checked) return;
+  const c = exercises[current];
+  const inp = document.getElementById('inp');
+  checked = true;
+  inp.value = c.answer; inp.classList.add('wrong'); inp.disabled = true;
+  const fb = document.getElementById('fb');
+  fb.className = 'feedback wrong'; fb.textContent = `Answer: ${c.answer}`;
+  results.push({ correct:false, answer:c.answer, given:'' });
+  document.getElementById('sc').innerHTML = `Score: <span>${score}</span> / ${current+1}`;
+  document.getElementById('btns').innerHTML = `<button class="primary" onclick="next()">${current+1 < exercises.length ? 'Next →' : 'See results →'}</button>`;
+  saveTodayState({ dateKey:getTodayKey(), current:current+1, score, results, seconds, completed:false });
+}
+
+function next() {
+  current++;
+  if (current >= exercises.length) showSummary();
+  else render();
+}
+
+function showSummary() {
+  stopTimer();
+  const pct = Math.round((score/exercises.length)*100);
+  const medal = pct===100?'🥇':pct>=70?'🥈':'🥉';
+  const msg = pct===100?'¡Perfecto! Absolutely flawless!':pct>=80?'¡Muy bien! Great work!':pct>=60?'¡Bien! Solid effort!':'¡Sigue adelante! Keep going!';
+  const todayKey = getTodayKey();
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+  const yKey = yesterday.toISOString().slice(0,10);
+  let newCount = (streak.lastCompleted===yKey) ? streak.count+1 : (streak.lastCompleted===todayKey ? streak.count : 1);
+  saveStreak({ count:newCount, lastCompleted:todayKey });
+  saveTodayState({ dateKey:todayKey, current, score, results, seconds, completed:true });
+  const dots = results.map(r=>`<span>${r.correct?'✅':'❌'}</span>`).join('');
+
+  document.getElementById('app').innerHTML = `
+    <div class="summary">
+      <div class="medal">${medal}</div>
+      <h2>Challenge complete!</h2>
+      <div class="big">${score}/${exercises.length}</div>
+      <div class="dots">${dots}</div>
+      <p>${msg}</p>
+      <p class="time-note">Time: ${formatTime(seconds)} · ${newCount} day streak 🔥</p>
+      <button class="primary" onclick="playAgain()">Play again with new sentences</button>
+    </div>
+  `;
+}
+
+function showDone(saved) {
+  const dots = (saved.results||[]).map(r=>`<span>${r.correct?'✅':'❌'}</span>`).join('');
+  document.getElementById('app').innerHTML = `
+    <div class="done-card">
+      <div style="font-size:2.5rem;margin-bottom:0.5rem;">🌮</div>
+      <h2>Already done today!</h2>
+      <div class="big">${saved.score}/${PER_DAY}</div>
+      <div class="dots" style="margin:0.75rem 0;">${dots}</div>
+      <p>Time: ${formatTime(saved.seconds||0)}</p>
+      <p style="margin-bottom:1.25rem;">Come back tomorrow for a fresh set.</p>
+      <button class="primary" onclick="playAgain()">Practice again anyway</button>
+    </div>
+  `;
+}
+
+function playAgain() {
+  stopTimer();
+  exercises = seededShuffle(ALL, Date.now()).slice(0, PER_DAY);
+  current=0; score=0; results=[]; seconds=0;
+  startTimer();
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
