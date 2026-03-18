@@ -6,6 +6,7 @@
   <title>Daily Spanish Challenge</title>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
   <style>
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #f5f0e8; --card: #fffdf8; --ink: #1a1208; --ink2: #6b5c3e; --ink3: #a8956e;
@@ -78,13 +79,23 @@
     .translation span { color: var(--ink2); }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+  
+    .tab-bar { display: flex; gap: 0; margin-bottom: 1.75rem; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--card); }
+    .tab-btn { flex: 1; padding: 12px 16px; font-family: "DM Sans", sans-serif; font-size: 0.88rem; font-weight: 500; border: none; background: transparent; color: var(--ink3); cursor: pointer; transition: all 0.18s; border-right: 1px solid var(--border); }
+    .tab-btn:last-child { border-right: none; }
+    .tab-btn.active { background: var(--accent); color: #fff; }
+    .tab-btn:hover:not(.active) { background: var(--bg); color: var(--ink); }
+    .tense-label { display: inline-block; font-size: 0.72rem; background: rgba(255,255,255,0.25); border-radius: 999px; padding: 1px 7px; margin-left: 6px; vertical-align: middle; }
+    .tab-btn:not(.active) .tense-label { background: var(--tag-irreg); color: var(--tag-irreg-t); }
+
   </style>
 </head>
 <body>
 <header>
   <h1>Daily <em>Spanish</em> Challenge</h1>
-  <p>Pretérito indefinido &middot; Mexican Spanish &middot; 500+ sentences</p>
+  <p>Mexican Spanish &middot; Spaced repetition &middot; 950+ sentences</p>
 </header>
+<div style="width:100%;max-width:560px;" id="tab-bar"></div>
 <div class="app" id="app"><p style="color:var(--ink3);font-size:0.9rem;">Loading...</p></div>
 <script>
 const ALL = [
@@ -609,10 +620,500 @@ const ALL = [
   { before:"Nosotros", answer:"nos confundimos", after:"con el cambio de horario.", hint:"confundirse (to get confused)", tag:"ir", translation:"We got confused by the time change." },
 ];
 
+const ALL_IMP = [
+// -AR imperfecto regular
+  { before:"Cuando era niño, yo", answer:"comía", after:"tamales todos los domingos.", hint:"comer (to eat)", tag:"er", translation:"When I was a child, I used to eat tamales every Sunday." },
+  { before:"Antes, nosotros", answer:"viajábamos", after:"a la playa cada verano.", hint:"viajar (to travel)", tag:"ar", translation:"Before, we used to travel to the beach every summer." },
+  { before:"Ella siempre", answer:"cantaba", after:"mientras cocinaba.", hint:"cantar (to sing)", tag:"ar", translation:"She always used to sing while she cooked." },
+  { before:"Tú", answer:"trabajabas", after:"demasiado en esa época.", hint:"trabajar (to work)", tag:"ar", translation:"You used to work too much back then." },
+  { before:"Mis abuelos", answer:"vivían", after:"en un rancho en Jalisco.", hint:"vivir (to live)", tag:"ir", translation:"My grandparents used to live on a ranch in Jalisco." },
+  { before:"El mercado", answer:"abría", after:"a las seis de la mañana.", hint:"abrir (to open)", tag:"ir", translation:"The market used to open at six in the morning." },
+  { before:"Nosotros", answer:"jugábamos", after:"fútbol en la calle después de la escuela.", hint:"jugar (to play)", tag:"ar", translation:"We used to play football in the street after school." },
+  { before:"Él", answer:"manejaba", after:"muy despacio porque era nuevo.", hint:"manejar (to drive)", tag:"ar", translation:"He used to drive very slowly because he was new." },
+  { before:"Yo", answer:"escuchaba", after:"la radio mientras desayunaba.", hint:"escuchar (to listen)", tag:"ar", translation:"I used to listen to the radio while having breakfast." },
+  { before:"Ella", answer:"estudiaba", after:"en la biblioteca cada tarde.", hint:"estudiar (to study)", tag:"ar", translation:"She used to study in the library every afternoon." },
+  { before:"Cuando niño, él", answer:"lloraba", after:"si no había tortillas en la mesa.", hint:"llorar (to cry)", tag:"ar", translation:"As a child, he used to cry if there were no tortillas on the table." },
+  { before:"Nosotros siempre", answer:"celebrábamos", after:"el día de muertos en familia.", hint:"celebrar (to celebrate)", tag:"ar", translation:"We always used to celebrate Day of the Dead as a family." },
+  { before:"Tú", answer:"llamabas", after:"a tu mamá todos los días.", hint:"llamar (to call)", tag:"ar", translation:"You used to call your mum every day." },
+  { before:"Yo", answer:"nadaba", after:"en el río cuando era chico.", hint:"nadar (to swim)", tag:"ar", translation:"I used to swim in the river when I was little." },
+  { before:"Ellos", answer:"bailaban", after:"en la plaza los viernes por la noche.", hint:"bailar (to dance)", tag:"ar", translation:"They used to dance in the square on Friday nights." },
+  { before:"La tienda", answer:"cerraba", after:"a las nueve en punto.", hint:"cerrar (to close)", tag:"ar", translation:"The shop used to close at nine on the dot." },
+  { before:"Mi papá", answer:"cocinaba", after:"los fines de semana.", hint:"cocinar (to cook)", tag:"ar", translation:"My dad used to cook at weekends." },
+  { before:"Yo", answer:"caminaba", after:"al colegio todos los días.", hint:"caminar (to walk)", tag:"ar", translation:"I used to walk to school every day." },
+  { before:"Ellos", answer:"platicaban", after:"horas por teléfono.", hint:"platicar (to chat)", tag:"ar", translation:"They used to chat for hours on the phone." },
+  { before:"Tú siempre", answer:"llegabas", after:"tarde a la primera clase.", hint:"llegar (to arrive)", tag:"ar", translation:"You always used to arrive late to the first class." },
+  { before:"Nosotros", answer:"descansábamos", after:"en la hamaca después de comer.", hint:"descansar (to rest)", tag:"ar", translation:"We used to rest in the hammock after eating." },
+  { before:"Ella", answer:"pintaba", after:"acuarelas cuando era adolescente.", hint:"pintar (to paint)", tag:"ar", translation:"She used to paint watercolours when she was a teenager." },
+  { before:"Yo", answer:"rezaba", after:"cada noche antes de dormir.", hint:"rezar (to pray)", tag:"ar", translation:"I used to pray every night before sleeping." },
+  { before:"El pueblo", answer:"llenaba", after:"de flores en primavera.", hint:"llenarse (to fill up)", tag:"ar", translation:"The town used to fill with flowers in spring." },
+  { before:"Tú", answer:"ayudabas", after:"a tu abuela con las compras.", hint:"ayudar (to help)", tag:"ar", translation:"You used to help your grandmother with the shopping." },
+  { before:"Él", answer:"practicaba", after:"guitarra una hora cada día.", hint:"practicar (to practice)", tag:"ar", translation:"He used to practise guitar for an hour every day." },
+  { before:"Nosotros", answer:"comprábamos", after:"elotes en el mismo puesto.", hint:"comprar (to buy)", tag:"ar", translation:"We used to buy corn on the cob at the same stall." },
+  { before:"Yo", answer:"guardaba", after:"mis ahorros en una cajita de metal.", hint:"guardar (to save/keep)", tag:"ar", translation:"I used to keep my savings in a little metal box." },
+  { before:"Ella", answer:"enseñaba", after:"matemáticas en la secundaria.", hint:"enseñar (to teach)", tag:"ar", translation:"She used to teach maths at secondary school." },
+  { before:"El perro siempre", answer:"ladraba", after:"cuando llegaba el cartero.", hint:"ladrar (to bark)", tag:"ar", translation:"The dog always used to bark when the postman arrived." },
+  { before:"Yo", answer:"dibujaba", after:"personajes en mis cuadernos.", hint:"dibujar (to draw)", tag:"ar", translation:"I used to draw characters in my notebooks." },
+  { before:"Tú", answer:"visitabas", after:"a tus tíos cada Navidad.", hint:"visitar (to visit)", tag:"ar", translation:"You used to visit your aunt and uncle every Christmas." },
+  { before:"Ellos", answer:"tocaban", after:"en una banda de cumbia.", hint:"tocar (to play music)", tag:"ar", translation:"They used to play in a cumbia band." },
+  { before:"Ella", answer:"madrugaba", after:"para ver el amanecer.", hint:"madrugar (to get up early)", tag:"ar", translation:"She used to get up early to watch the sunrise." },
+  { before:"Nosotros", answer:"pasábamos", after:"los veranos en la sierra.", hint:"pasar (to spend time)", tag:"ar", translation:"We used to spend our summers in the mountains." },
+  { before:"Yo", answer:"desayunaba", after:"en la fonda de la esquina.", hint:"desayunar (to have breakfast)", tag:"ar", translation:"I used to have breakfast at the corner diner." },
+  { before:"Él", answer:"fumaba", after:"en el patio después de cenar.", hint:"fumar (to smoke)", tag:"ar", translation:"He used to smoke in the yard after dinner." },
+  { before:"Tú", answer:"enviabas", after:"cartas a mano antes de tener correo.", hint:"enviar (to send)", tag:"ar", translation:"You used to send handwritten letters before having email." },
+  { before:"Las noches de verano", answer:"olían", after:"a jazmín y tierra mojada.", hint:"oler (to smell)", tag:"er", translation:"Summer nights used to smell of jasmine and wet earth." },
+  { before:"Mi abuela siempre", answer:"preparaba", after:"atole cuando hacía frío.", hint:"preparar (to prepare)", tag:"ar", translation:"My grandmother always used to make atole when it was cold." },
+  { before:"Yo", answer:"me levantaba", after:"tarde los domingos sin falta.", hint:"levantarse (to get up)", tag:"ar", translation:"I used to get up late every Sunday without fail." },
+  { before:"Nosotros", answer:"disfrutábamos", after:"de los fuegos artificiales desde la azotea.", hint:"disfrutar (to enjoy)", tag:"ar", translation:"We used to enjoy the fireworks from the rooftop." },
+  { before:"Él", answer:"arreglaba", after:"coches viejos como hobby.", hint:"arreglar (to fix)", tag:"ar", translation:"He used to fix old cars as a hobby." },
+  { before:"Tú", answer:"te bañabas", after:"en el río con tus primos.", hint:"bañarse (to bathe)", tag:"ar", translation:"You used to bathe in the river with your cousins." },
+  { before:"Ella", answer:"se maquillaba", after:"muy poco cuando era joven.", hint:"maquillarse (to put on makeup)", tag:"ar", translation:"She used to wear very little makeup when she was young." },
+  { before:"Yo", answer:"me acostaba", after:"con el radio encendido.", hint:"acostarse (to go to bed)", tag:"ar", translation:"I used to go to bed with the radio on." },
+  { before:"Nosotros", answer:"nos levantábamos", after:"con los gallos en el rancho.", hint:"levantarse (to get up)", tag:"ar", translation:"We used to get up with the cockerels at the ranch." },
+  { before:"Él", answer:"estacionaba", after:"el camión frente a la iglesia.", hint:"estacionar (to park)", tag:"ar", translation:"He used to park the van in front of the church." },
+  { before:"Tú", answer:"te preocupabas", after:"demasiado por todo.", hint:"preocuparse (to worry)", tag:"ar", translation:"You used to worry too much about everything." },
+  { before:"Ella", answer:"se enojaba", after:"si llegaban tarde a cenar.", hint:"enojarse (to get angry)", tag:"ar", translation:"She used to get angry if they arrived late for dinner." },
+
+  // -ER imperfecto regular
+  { before:"Cuando era joven, yo", answer:"corría", after:"cinco kilómetros cada mañana.", hint:"correr (to run)", tag:"er", translation:"When I was young, I used to run five kilometres every morning." },
+  { before:"Él siempre", answer:"leía", after:"el periódico con su café.", hint:"leer (to read)", tag:"er", translation:"He always used to read the newspaper with his coffee." },
+  { before:"Nosotros", answer:"comíamos", after:"en familia todos los domingos.", hint:"comer (to eat)", tag:"er", translation:"We used to eat together as a family every Sunday." },
+  { before:"Tú", answer:"bebías", after:"agua de jamaica en el desayuno.", hint:"beber (to drink)", tag:"er", translation:"You used to drink hibiscus water at breakfast." },
+  { before:"Ella", answer:"vendía", after:"dulces en la salida de la escuela.", hint:"vender (to sell)", tag:"er", translation:"She used to sell sweets at the school gate." },
+  { before:"Yo", answer:"entendía", after:"poco español al principio.", hint:"entender (to understand)", tag:"er", translation:"I used to understand very little Spanish at first." },
+  { before:"Ellos", answer:"aprendían", after:"nuevas canciones cada semana.", hint:"aprender (to learn)", tag:"er", translation:"They used to learn new songs every week." },
+  { before:"Él", answer:"perdía", after:"las llaves constantemente.", hint:"perder (to lose)", tag:"er", translation:"He was always losing his keys." },
+  { before:"Nosotros", answer:"bebíamos", after:"atole frío en los días de calor.", hint:"beber (to drink)", tag:"er", translation:"We used to drink cold atole on hot days." },
+  { before:"Yo", answer:"leía", after:"cuentos a mis hermanos menores.", hint:"leer (to read)", tag:"er", translation:"I used to read stories to my younger siblings." },
+  { before:"Tú", answer:"comías", after:"chile en todo, hasta en los dulces.", hint:"comer (to eat)", tag:"er", translation:"You used to put chilli on everything, even sweets." },
+  { before:"Ella", answer:"prometía", after:"cosas que nunca cumplía.", hint:"prometer (to promise)", tag:"er", translation:"She used to promise things she never followed through on." },
+  { before:"Él", answer:"corría", after:"para alcanzar el camión.", hint:"correr (to run)", tag:"er", translation:"He used to run to catch the bus." },
+  { before:"Nosotros", answer:"recogíamos", after:"a los niños a las tres.", hint:"recoger (to pick up)", tag:"er", translation:"We used to pick up the children at three." },
+  { before:"Yo", answer:"respondía", after:"todos los correos el mismo día.", hint:"responder (to reply)", tag:"er", translation:"I used to reply to all emails the same day." },
+  { before:"Tú", answer:"escondías", after:"el control de la tele.", hint:"esconder (to hide)", tag:"er", translation:"You used to hide the TV remote." },
+  { before:"Ellos", answer:"discutían", after:"de política en cada cena.", hint:"discutir (to argue)", tag:"er", translation:"They used to argue about politics at every dinner." },
+  { before:"Ella", answer:"encendía", after:"velas cada noche.", hint:"encender (to light)", tag:"er", translation:"She used to light candles every night." },
+  { before:"Yo", answer:"comprendía", after:"mejor cuando me explicaban con ejemplos.", hint:"comprender (to understand)", tag:"er", translation:"I used to understand better when they explained with examples." },
+  { before:"Nosotros", answer:"resolviamos", after:"los crucigramas juntos los domingos.", hint:"resolver (to solve)", tag:"er", translation:"We used to solve crosswords together on Sundays." },
+  { before:"Él", answer:"devolvía", after:"los libros antes de tiempo.", hint:"devolver (to return)", tag:"er", translation:"He used to return books before they were due." },
+  { before:"Tú", answer:"sorprendías", after:"a todos con tu talento.", hint:"sorprender (to surprise)", tag:"er", translation:"You used to surprise everyone with your talent." },
+  { before:"Ella", answer:"mordía", after:"el lápiz cuando pensaba.", hint:"morder (to bite)", tag:"er", translation:"She used to bite her pencil when she was thinking." },
+  { before:"Yo", answer:"temía", after:"a las arañas de pequeño.", hint:"temer (to fear)", tag:"er", translation:"I used to be scared of spiders as a child." },
+  { before:"Nosotros", answer:"recorrimos", after:"el parque cada tarde.", hint:"recorrer (to go around)", tag:"er", translation:"We used to walk around the park every afternoon." },
+
+  // -IR imperfecto regular
+  { before:"Mis abuelos", answer:"vivían", after:"sin electricidad en el campo.", hint:"vivir (to live)", tag:"ir", translation:"My grandparents used to live without electricity in the countryside." },
+  { before:"Ella siempre", answer:"escribía", after:"en su diario antes de dormir.", hint:"escribir (to write)", tag:"ir", translation:"She always used to write in her diary before sleeping." },
+  { before:"Tú", answer:"dormías", after:"con la luz encendida de niño.", hint:"dormir (to sleep)", tag:"ir", translation:"You used to sleep with the light on as a child." },
+  { before:"Yo", answer:"abría", after:"la tienda a las ocho en punto.", hint:"abrir (to open)", tag:"ir", translation:"I used to open the shop at eight on the dot." },
+  { before:"Él", answer:"pedía", after:"el mismo platillo cada visita.", hint:"pedir (to ask for/order)", tag:"ir", translation:"He always used to order the same dish each visit." },
+  { before:"Nosotros", answer:"subíamos", after:"al cerro los fines de semana.", hint:"subir (to climb)", tag:"ir", translation:"We used to climb the hill at weekends." },
+  { before:"Ellos", answer:"recibían", after:"cartas de sus familiares en el norte.", hint:"recibir (to receive)", tag:"ir", translation:"They used to receive letters from their relatives in the north." },
+  { before:"Tú", answer:"seguías", after:"a tu hermano a todas partes.", hint:"seguir (to follow)", tag:"ir", translation:"You used to follow your brother everywhere." },
+  { before:"Ella", answer:"compartía", after:"todo con su hermana gemela.", hint:"compartir (to share)", tag:"ir", translation:"She used to share everything with her twin sister." },
+  { before:"Yo", answer:"añadía", after:"picante a casi todo.", hint:"añadir (to add)", tag:"ir", translation:"I used to add spice to almost everything." },
+  { before:"Nosotros", answer:"cumplíamos", after:"con nuestras tareas antes de jugar.", hint:"cumplir (to fulfill)", tag:"ir", translation:"We used to do our chores before playing." },
+  { before:"Él", answer:"admitía", after:"sus errores sin problema.", hint:"admitir (to admit)", tag:"ir", translation:"He used to admit his mistakes without any problem." },
+  { before:"Tú", answer:"insistías", after:"en pagar siempre que salíamos.", hint:"insistir (to insist)", tag:"ir", translation:"You always used to insist on paying when we went out." },
+  { before:"Ella", answer:"se vestía", after:"de manera muy colorida.", hint:"vestirse (to dress)", tag:"ir", translation:"She used to dress very colourfully." },
+  { before:"Yo", answer:"asistía", after:"a misa los domingos con mi familia.", hint:"asistir (to attend)", tag:"ir", translation:"I used to go to mass on Sundays with my family." },
+  { before:"Nosotros", answer:"discutíamos", after:"de todo pero nunca nos enojábamos.", hint:"discutir (to discuss)", tag:"ir", translation:"We used to discuss everything but never got angry." },
+  { before:"Él", answer:"partía", after:"el pan y lo repartía entre todos.", hint:"partir (to split)", tag:"ir", translation:"He used to break the bread and hand it out to everyone." },
+  { before:"Yo", answer:"dormía", after:"la siesta religiosamente.", hint:"dormir (to sleep)", tag:"ir", translation:"I used to take a nap religiously." },
+  { before:"Tú", answer:"sufrías", after:"mucho con los exámenes.", hint:"sufrir (to suffer)", tag:"ir", translation:"You used to suffer a lot with exams." },
+  { before:"Ella", answer:"se reía", after:"de los mismos chistes de siempre.", hint:"reírse (to laugh)", tag:"ir", translation:"She used to laugh at the same old jokes." },
+  { before:"Nosotros", answer:"nos divertíamos", after:"con muy poco.", hint:"divertirse (to have fun)", tag:"ir", translation:"We used to have fun with very little." },
+  { before:"Él", answer:"sirvió", after:"de guía para los turistas del barrio.", hint:"servir (to serve)", tag:"ir", translation:"He used to serve as a guide for tourists in the neighbourhood." },
+  { before:"Yo", answer:"me arrepentía", after:"de no estudiar más.", hint:"arrepentirse (to regret)", tag:"ir", translation:"I used to regret not studying more." },
+  { before:"Tú", answer:"te dormías", after:"en la clase de historia.", hint:"dormirse (to fall asleep)", tag:"ir", translation:"You used to fall asleep in history class." },
+  { before:"Ella", answer:"se despedía", after:"de todos con un abrazo.", hint:"despedirse (to say goodbye)", tag:"ir", translation:"She used to say goodbye to everyone with a hug." },
+
+  // SER, ESTAR, IR, TENER, HABER (special imperfecto forms)
+  { before:"Cuando era chico, yo", answer:"era", after:"muy tímido.", hint:"ser (to be)", tag:"irreg", translation:"When I was little, I used to be very shy." },
+  { before:"El mercado", answer:"era", after:"mucho más pequeño antes.", hint:"ser (to be)", tag:"irreg", translation:"The market used to be much smaller before." },
+  { before:"Tú", answer:"eras", after:"el más listo de la clase.", hint:"ser (to be)", tag:"irreg", translation:"You used to be the cleverest in the class." },
+  { before:"Nosotros", answer:"éramos", after:"vecinos cuando niños.", hint:"ser (to be)", tag:"irreg", translation:"We used to be neighbours as children." },
+  { before:"Ellos", answer:"eran", after:"inseparables en la universidad.", hint:"ser (to be)", tag:"irreg", translation:"They used to be inseparable at university." },
+  { before:"Ella", answer:"era", after:"muy callada antes de conocerte.", hint:"ser (to be)", tag:"irreg", translation:"She used to be very quiet before meeting you." },
+  { before:"Yo", answer:"estaba", after:"nervioso antes de cada examen.", hint:"estar (to be)", tag:"irreg", translation:"I used to be nervous before every exam." },
+  { before:"Tú", answer:"estabas", after:"siempre de buen humor.", hint:"estar (to be)", tag:"irreg", translation:"You were always in a good mood." },
+  { before:"Ella", answer:"estaba", after:"muy delgada cuando era bailarina.", hint:"estar (to be)", tag:"irreg", translation:"She used to be very slim when she was a dancer." },
+  { before:"Nosotros", answer:"estábamos", after:"cansados pero felices.", hint:"estar (to be)", tag:"irreg", translation:"We used to be tired but happy." },
+  { before:"Ellos", answer:"estaban", after:"siempre juntos en el recreo.", hint:"estar (to be)", tag:"irreg", translation:"They were always together at break time." },
+  { before:"Él", answer:"estaba", after:"enfermo cuando llegamos.", hint:"estar (to be)", tag:"irreg", translation:"He was ill when we arrived." },
+  { before:"Yo", answer:"iba", after:"al parque todos los sábados.", hint:"ir (to go)", tag:"irreg", translation:"I used to go to the park every Saturday." },
+  { before:"Tú", answer:"ibas", after:"a la tortillería a pie.", hint:"ir (to go)", tag:"irreg", translation:"You used to walk to the tortilla shop." },
+  { before:"Ella", answer:"iba", after:"a misa con su abuela los domingos.", hint:"ir (to go)", tag:"irreg", translation:"She used to go to mass with her grandmother on Sundays." },
+  { before:"Nosotros", answer:"íbamos", after:"de vacaciones en agosto.", hint:"ir (to go)", tag:"irreg", translation:"We used to go on holiday in August." },
+  { before:"Ellos", answer:"iban", after:"al cine los viernes.", hint:"ir (to go)", tag:"irreg", translation:"They used to go to the cinema on Fridays." },
+  { before:"Él", answer:"iba", after:"a pescar con su papá los fines de semana.", hint:"ir (to go)", tag:"irreg", translation:"He used to go fishing with his dad at weekends." },
+  { before:"Yo", answer:"tenía", after:"un perro llamado Canelo.", hint:"tener (to have)", tag:"irreg", translation:"I used to have a dog called Canelo." },
+  { before:"Tú", answer:"tenías", after:"mucho talento para el dibujo.", hint:"tener (to have)", tag:"irreg", translation:"You used to have a great talent for drawing." },
+  { before:"Ella", answer:"tenía", after:"el pelo muy largo cuando niña.", hint:"tener (to have)", tag:"irreg", translation:"She used to have very long hair as a child." },
+  { before:"Nosotros", answer:"teníamos", after:"que madrugar para llegar a tiempo.", hint:"tener (to have)", tag:"irreg", translation:"We used to have to get up early to arrive on time." },
+  { before:"Ellos", answer:"tenían", after:"una tienda de abarrotes en la colonia.", hint:"tener (to have)", tag:"irreg", translation:"They used to have a grocery shop in the neighbourhood." },
+  { before:"Él", answer:"tenía", after:"mucha paciencia con los estudiantes.", hint:"tener (to have)", tag:"irreg", translation:"He used to have a lot of patience with students." },
+  { before:"Antes", answer:"había", after:"más árboles en esta calle.", hint:"haber (there was/were)", tag:"irreg", translation:"There used to be more trees on this street." },
+  { before:"Antes", answer:"había", after:"una panadería en esa esquina.", hint:"haber (there was/were)", tag:"irreg", translation:"There used to be a bakery on that corner." },
+  { before:"No", answer:"había", after:"semáforos en ese crucero.", hint:"haber (there was/were)", tag:"irreg", translation:"There didn't used to be traffic lights at that junction." },
+
+  // More -AR imperfecto
+  { before:"Yo", answer:"me acercaba", after:"al puesto de tacos casi a diario.", hint:"acercarse (to approach)", tag:"ar", translation:"I used to go up to the taco stall almost every day." },
+  { before:"Tú", answer:"te animabas", after:"a hablar con desconocidos.", hint:"animarse (to dare)", tag:"ar", translation:"You used to dare to talk to strangers." },
+  { before:"Él", answer:"se acostumbraba", after:"rápido a los cambios.", hint:"acostumbrarse (to get used to)", tag:"ar", translation:"He used to adapt quickly to changes." },
+  { before:"Nosotros", answer:"nos adaptábamos", after:"a lo que hubiera.", hint:"adaptarse (to adapt)", tag:"ar", translation:"We used to adapt to whatever there was." },
+  { before:"Ella", answer:"se emocionaba", after:"con cualquier regalo.", hint:"emocionarse (to get emotional)", tag:"ar", translation:"She used to get emotional with any gift." },
+  { before:"Yo", answer:"me confundía", after:"con los acentos regionales.", hint:"confundirse (to get confused)", tag:"ar", translation:"I used to get confused by regional accents." },
+  { before:"Tú", answer:"te equivocabas", after:"de camión una vez a la semana.", hint:"equivocarse (to make a mistake)", tag:"ar", translation:"You used to get on the wrong bus once a week." },
+  { before:"Él", answer:"se quejaba", after:"del tráfico todos los lunes.", hint:"quejarse (to complain)", tag:"ar", translation:"He used to complain about the traffic every Monday." },
+  { before:"Nosotros", answer:"nos quedábamos", after:"a platicar horas en la sobremesa.", hint:"quedarse (to stay)", tag:"ar", translation:"We used to stay chatting for hours after meals." },
+  { before:"Ella", answer:"se especializaba", after:"en cocina tradicional yucateca.", hint:"especializarse (to specialize)", tag:"ar", translation:"She used to specialise in traditional Yucatecan cooking." },
+  { before:"Yo", answer:"me preocupaba", after:"por cosas que no valían la pena.", hint:"preocuparse (to worry)", tag:"ar", translation:"I used to worry about things that weren't worth it." },
+  { before:"Tú", answer:"te esforzabas", after:"más que nadie en el equipo.", hint:"esforzarse (to try hard)", tag:"ar", translation:"You used to try harder than anyone else on the team." },
+  { before:"Él", answer:"brindaba", after:"por cualquier motivo.", hint:"brindar (to toast)", tag:"ar", translation:"He used to toast any occasion." },
+  { before:"Nosotros", answer:"protestábamos", after:"cuando el árbitro pitaba mal.", hint:"protestar (to protest)", tag:"ar", translation:"We used to protest when the referee made a bad call." },
+  { before:"Ella", answer:"madrugaba", after:"para ir al tianguis del jueves.", hint:"madrugar (to get up early)", tag:"ar", translation:"She used to get up early to go to the Thursday market." },
+  { before:"Yo", answer:"me familiarizaba", after:"con los sabores poco a poco.", hint:"familiarizarse (to familiarize)", tag:"ar", translation:"I used to familiarise myself with the flavours little by little." },
+  { before:"Tú", answer:"te acostabas", after:"tardísimo los fines de semana.", hint:"acostarse (to go to bed)", tag:"ar", translation:"You used to go to bed very late at weekends." },
+  { before:"Él", answer:"cargaba", after:"con todo sin pedir ayuda.", hint:"cargar (to carry)", tag:"ar", translation:"He used to carry everything without asking for help." },
+  { before:"Nosotros", answer:"disfrutábamos", after:"de los atardeceres desde el malecón.", hint:"disfrutar (to enjoy)", tag:"ar", translation:"We used to enjoy the sunsets from the seafront." },
+  { before:"Ella", answer:"decoraba", after:"la casa con plantas por todas partes.", hint:"decorar (to decorate)", tag:"ar", translation:"She used to decorate the house with plants everywhere." },
+  { before:"Yo", answer:"extrañaba", after:"la comida de casa cuando viajaba.", hint:"extrañar (to miss)", tag:"ar", translation:"I used to miss home cooking when I travelled." },
+  { before:"Tú", answer:"te duchaban", after:"con agua fría en el campamento.", hint:"ducharse (to shower)", tag:"ar", translation:"You used to shower with cold water at the campsite." },
+  { before:"Él", answer:"organizaba", after:"las posadas del barrio cada diciembre.", hint:"organizar (to organize)", tag:"ar", translation:"He used to organise the neighbourhood posadas every December." },
+  { before:"Nosotros", answer:"ahorrábamos", after:"monedas en un tarro de vidrio.", hint:"ahorrar (to save)", tag:"ar", translation:"We used to save coins in a glass jar." },
+  { before:"Ella", answer:"se peinaba", after:"trenzas cuando era niña.", hint:"peinarse (to comb hair)", tag:"ar", translation:"She used to wear her hair in braids as a girl." },
+  { before:"Yo", answer:"me bañaba", after:"dos veces al día en verano.", hint:"bañarse (to bathe)", tag:"ar", translation:"I used to bathe twice a day in summer." },
+  { before:"Tú", answer:"te levantabas", after:"con el olor del café recién hecho.", hint:"levantarse (to get up)", tag:"ar", translation:"You used to wake up to the smell of freshly made coffee." },
+  { before:"Él", answer:"manejaba", after:"un camión de carga por las noches.", hint:"manejar (to drive)", tag:"ar", translation:"He used to drive a lorry at night." },
+  { before:"Nosotros", answer:"nos peleábamos", after:"por el último taco.", hint:"pelearse (to fight)", tag:"ar", translation:"We used to fight over the last taco." },
+  { before:"Ella", answer:"se animaba", after:"a cantar después de dos refrescos.", hint:"animarse (to dare)", tag:"ar", translation:"She used to pluck up the courage to sing after two soft drinks." },
+  { before:"Yo", answer:"marcaba", after:"los libros con colores.", hint:"marcar (to mark)", tag:"ar", translation:"I used to mark books with different colours." },
+  { before:"Tú", answer:"te olvidabas", after:"siempre de apagar las luces.", hint:"olvidarse (to forget)", tag:"ar", translation:"You always used to forget to turn the lights off." },
+  { before:"Él", answer:"cortaba", after:"el césped cada quince días.", hint:"cortar (to cut)", tag:"ar", translation:"He used to cut the grass every fortnight." },
+  { before:"Nosotros", answer:"recogíamos", after:"naranjas del árbol del patio.", hint:"recoger (to pick up)", tag:"ar", translation:"We used to pick oranges from the tree in the yard." },
+  { before:"Ella", answer:"cantaba", after:"en el coro de la iglesia.", hint:"cantar (to sing)", tag:"ar", translation:"She used to sing in the church choir." },
+
+  // More -ER imperfecto
+  { before:"Yo", answer:"me caía", after:"seguido cuando aprendí a andar en bici.", hint:"caerse (to fall)", tag:"er", translation:"I used to fall off a lot when I was learning to ride a bike." },
+  { before:"Tú", answer:"te sorprendías", after:"de todo cuando llegaste a México.", hint:"sorprenderse (to be surprised)", tag:"er", translation:"You used to be surprised by everything when you arrived in Mexico." },
+  { before:"Él", answer:"se negaba", after:"a comer verduras.", hint:"negarse (to refuse)", tag:"er", translation:"He used to refuse to eat vegetables." },
+  { before:"Nosotros", answer:"nos establecíamos", after:"en el mismo lugar cada vacaciones.", hint:"establecerse (to settle)", tag:"er", translation:"We used to settle in the same place every holiday." },
+  { before:"Ella", answer:"se comprometía", after:"con todo lo que prometía.", hint:"comprometerse (to commit)", tag:"er", translation:"She always used to follow through on everything she promised." },
+  { before:"Yo", answer:"me detenía", after:"a ver los murales en la calle.", hint:"detenerse (to stop)", tag:"er", translation:"I used to stop to look at the murals in the street." },
+  { before:"Tú", answer:"te entretenías", after:"durante horas en la librería.", hint:"entretenerse (to entertain oneself)", tag:"er", translation:"You used to spend hours in the bookshop." },
+  { before:"Él", answer:"se atrevía", after:"a probar platillos desconocidos.", hint:"atreverse (to dare)", tag:"er", translation:"He used to dare to try unfamiliar dishes." },
+  { before:"Nosotros", answer:"nos oponíamos", after:"a cualquier cambio.", hint:"oponerse (to oppose)", tag:"er", translation:"We used to oppose any kind of change." },
+  { before:"Ella", answer:"se aburrría", after:"en los viajes largos.", hint:"aburrirse (to get bored)", tag:"er", translation:"She used to get bored on long journeys." },
+  { before:"Yo", answer:"agradecía", after:"cada gesto pequeño.", hint:"agradecer (to thank)", tag:"er", translation:"I used to appreciate every small gesture." },
+  { before:"Tú", answer:"obedecías", after:"sin preguntar por qué.", hint:"obedecer (to obey)", tag:"er", translation:"You used to obey without asking why." },
+  { before:"Él", answer:"padecía", after:"del estómago cada vez que viajaba.", hint:"padecer (to suffer)", tag:"er", translation:"He used to get a stomach ache every time he travelled." },
+  { before:"Nosotros", answer:"recorríamos", after:"la ciudad a pie sin cansarnos.", hint:"recorrer (to walk around)", tag:"er", translation:"We used to walk all around the city without getting tired." },
+  { before:"Ella", answer:"se metía", after:"al agua sin pensarlo.", hint:"meterse (to get in)", tag:"er", translation:"She used to jump in the water without thinking." },
+  { before:"Yo", answer:"devolvía", after:"siempre lo que me prestaban.", hint:"devolver (to return)", tag:"er", translation:"I always used to return things that were lent to me." },
+  { before:"Tú", answer:"te convencías", after:"fácilmente de todo.", hint:"convencerse (to convince oneself)", tag:"er", translation:"You used to be easily convinced of everything." },
+  { before:"Nosotros", answer:"cedíamos", after:"el turno a quien llegara primero.", hint:"ceder (to yield)", tag:"er", translation:"We used to give our turn to whoever arrived first." },
+  { before:"Él", answer:"proponía", after:"ideas nuevas en cada reunión.", hint:"proponer (to suggest)", tag:"er", translation:"He used to propose new ideas at every meeting." },
+  { before:"Yo", answer:"comprendía", after:"mejor hablando que leyendo.", hint:"comprender (to understand)", tag:"er", translation:"I used to understand better by speaking than by reading." },
+
+  // More -IR imperfecto
+  { before:"Yo", answer:"me vestía", after:"de forma muy informal.", hint:"vestirse (to dress)", tag:"ir", translation:"I used to dress very informally." },
+  { before:"Tú", answer:"te divertías", after:"con cualquier cosa.", hint:"divertirse (to have fun)", tag:"ir", translation:"You used to have fun with anything." },
+  { before:"Ella", answer:"salía", after:"adelante siempre sin importar qué.", hint:"salir (to come out ahead)", tag:"ir", translation:"She always used to come out on top no matter what." },
+  { before:"Él", answer:"se despedía", after:"con la misma frase siempre.", hint:"despedirse (to say goodbye)", tag:"ir", translation:"He always used to say goodbye with the same phrase." },
+  { before:"Nosotros", answer:"nos reíamos", after:"de nuestros propios errores.", hint:"reírse (to laugh)", tag:"ir", translation:"We used to laugh at our own mistakes." },
+  { before:"Yo", answer:"coincidía", after:"con mis vecinos en el metro.", hint:"coincidir (to coincide)", tag:"ir", translation:"I used to bump into my neighbours on the metro." },
+  { before:"Tú", answer:"te confundías", after:"de piso en el edificio.", hint:"confundirse (to get confused)", tag:"ir", translation:"You used to mix up which floor you were on in the building." },
+  { before:"Él", answer:"se convertía", after:"en otra persona al subir al escenario.", hint:"convertirse (to become)", tag:"ir", translation:"He used to become a different person when he got on stage." },
+  { before:"Nosotros", answer:"nos despedíamos", after:"siempre con la promesa de vernos pronto.", hint:"despedirse (to say goodbye)", tag:"ir", translation:"We always used to say goodbye with a promise to see each other soon." },
+  { before:"Ella", answer:"se dormía", after:"en el camión de regreso a casa.", hint:"dormirse (to fall asleep)", tag:"ir", translation:"She used to fall asleep on the bus home." },
+  { before:"Yo", answer:"seguía", after:"las recetas al pie de la letra.", hint:"seguir (to follow)", tag:"ir", translation:"I used to follow recipes to the letter." },
+  { before:"Tú", answer:"medías", after:"todo con cinta métrica.", hint:"medir (to measure)", tag:"ir", translation:"You used to measure everything with a tape measure." },
+  { before:"Él", answer:"repetía", after:"los chistes aunque ya los conociéramos.", hint:"repetir (to repeat)", tag:"ir", translation:"He used to repeat jokes even though we already knew them." },
+  { before:"Nosotros", answer:"pedíamos", after:"siempre el mismo platillo.", hint:"pedir (to order)", tag:"ir", translation:"We always used to order the same dish." },
+  { before:"Ella", answer:"servía", after:"la cena a las ocho en punto.", hint:"servir (to serve)", tag:"ir", translation:"She used to serve dinner at eight on the dot." },
+  { before:"Yo", answer:"me arrepentía", after:"si no ayudaba.", hint:"arrepentirse (to regret)", tag:"ir", translation:"I used to feel bad if I didn't help." },
+  { before:"Tú", answer:"te vestías", after:"de colores vivos.", hint:"vestirse (to dress)", tag:"ir", translation:"You used to dress in bright colours." },
+  { before:"Él", answer:"surgía", after:"con ideas brillantes en los momentos difíciles.", hint:"surgir (to emerge)", tag:"ir", translation:"He used to come up with brilliant ideas in difficult moments." },
+  { before:"Nosotros", answer:"subíamos", after:"al volcán cada temporada.", hint:"subir (to climb)", tag:"ir", translation:"We used to climb the volcano every season." },
+  { before:"Ella", answer:"existía", after:"en su propio mundo.", hint:"existir (to exist)", tag:"ir", translation:"She used to exist in her own world." },
+
+  // More SER/ESTAR/IR/TENER
+  { before:"La ciudad", answer:"era", after:"más tranquila hace veinte años.", hint:"ser (to be)", tag:"irreg", translation:"The city used to be more peaceful twenty years ago." },
+  { before:"Yo", answer:"era", after:"muy impaciente cuando joven.", hint:"ser (to be)", tag:"irreg", translation:"I used to be very impatient when I was young." },
+  { before:"Él", answer:"era", after:"el mejor jugador del barrio.", hint:"ser (to be)", tag:"irreg", translation:"He used to be the best player in the neighbourhood." },
+  { before:"Tú", answer:"eras", after:"muy curioso cuando niño.", hint:"ser (to be)", tag:"irreg", translation:"You used to be very curious as a child." },
+  { before:"Ella", answer:"era", after:"la más aplicada de su generación.", hint:"ser (to be)", tag:"irreg", translation:"She used to be the most hardworking of her year." },
+  { before:"Nosotros", answer:"éramos", after:"muy unidos de jóvenes.", hint:"ser (to be)", tag:"irreg", translation:"We used to be very close when we were young." },
+  { before:"El río", answer:"estaba", after:"limpio cuando éramos niños.", hint:"estar (to be)", tag:"irreg", translation:"The river used to be clean when we were children." },
+  { before:"Yo", answer:"estaba", after:"emocionado cada vez que íbamos de viaje.", hint:"estar (to be)", tag:"irreg", translation:"I used to be excited every time we went on a trip." },
+  { before:"Tú", answer:"estabas", after:"seguro de todo a los veinte años.", hint:"estar (to be)", tag:"irreg", translation:"You used to be sure of everything at the age of twenty." },
+  { before:"Ella", answer:"estaba", after:"más alegre antes del cambio.", hint:"estar (to be)", tag:"irreg", translation:"She used to be happier before the change." },
+  { before:"Nosotros", answer:"estábamos", after:"muy cerca del parque.", hint:"estar (to be)", tag:"irreg", translation:"We used to be very close to the park." },
+  { before:"Ellos", answer:"estaban", after:"de acuerdo en casi todo.", hint:"estar (to be)", tag:"irreg", translation:"They used to agree on almost everything." },
+  { before:"Yo", answer:"iba", after:"a clases de salsa los martes.", hint:"ir (to go)", tag:"irreg", translation:"I used to go to salsa classes on Tuesdays." },
+  { before:"Tú", answer:"ibas", after:"al mercado con tu mamá.", hint:"ir (to go)", tag:"irreg", translation:"You used to go to the market with your mum." },
+  { before:"Ella", answer:"iba", after:"al gimnasio antes del trabajo.", hint:"ir (to go)", tag:"irreg", translation:"She used to go to the gym before work." },
+  { before:"Nosotros", answer:"íbamos", after:"a la misma playa cada año.", hint:"ir (to go)", tag:"irreg", translation:"We used to go to the same beach every year." },
+  { before:"Ellos", answer:"iban", after:"a la tienda de la esquina a fiado.", hint:"ir (to go)", tag:"irreg", translation:"They used to go to the corner shop on credit." },
+  { before:"Él", answer:"iba", after:"a la biblioteca a estudiar.", hint:"ir (to go)", tag:"irreg", translation:"He used to go to the library to study." },
+  { before:"Yo", answer:"tenía", after:"miedo a la oscuridad.", hint:"tener (to have)", tag:"irreg", translation:"I used to be afraid of the dark." },
+  { before:"Tú", answer:"tenías", after:"un jardín lleno de flores.", hint:"tener (to have)", tag:"irreg", translation:"You used to have a garden full of flowers." },
+  { before:"Él", answer:"tenía", after:"que cuidar a sus hermanos menores.", hint:"tener (to have)", tag:"irreg", translation:"He used to have to look after his younger siblings." },
+  { before:"Nosotros", answer:"teníamos", after:"un gato que dormía en el tejado.", hint:"tener (to have)", tag:"irreg", translation:"We used to have a cat that slept on the roof." },
+  { before:"Ella", answer:"tenía", after:"una colección de estampitas.", hint:"tener (to have)", tag:"irreg", translation:"She used to have a collection of little stickers." },
+  { before:"Ellos", answer:"tenían", after:"una fonda muy popular en el centro.", hint:"tener (to have)", tag:"irreg", translation:"They used to have a very popular diner in the centre." },
+
+  // Querer, poder, saber, ver, venir (imperfecto)
+  { before:"Yo", answer:"quería", after:"ser astronauta de niño.", hint:"querer (to want)", tag:"irreg", translation:"I used to want to be an astronaut as a child." },
+  { before:"Tú", answer:"querías", after:"aprender a tocar el violín.", hint:"querer (to want)", tag:"irreg", translation:"You used to want to learn to play the violin." },
+  { before:"Ella", answer:"quería", after:"visitar todos los estados de México.", hint:"querer (to want)", tag:"irreg", translation:"She used to want to visit all the states of Mexico." },
+  { before:"Nosotros", answer:"queríamos", after:"quedarnos para siempre.", hint:"querer (to want)", tag:"irreg", translation:"We used to want to stay forever." },
+  { before:"Ellos", answer:"querían", after:"abrir su propio restaurante.", hint:"querer (to want)", tag:"irreg", translation:"They used to want to open their own restaurant." },
+  { before:"Él", answer:"quería", after:"ser el primero en todo.", hint:"querer (to want)", tag:"irreg", translation:"He used to want to be first at everything." },
+  { before:"Yo", answer:"podía", after:"comer tres platos sin problema.", hint:"poder (to be able to)", tag:"irreg", translation:"I used to be able to eat three courses without a problem." },
+  { before:"Tú", answer:"podías", after:"dormir en cualquier lugar.", hint:"poder (to be able to)", tag:"irreg", translation:"You used to be able to sleep anywhere." },
+  { before:"Ella", answer:"podía", after:"hablar cuatro idiomas de joven.", hint:"poder (to be able to)", tag:"irreg", translation:"She used to be able to speak four languages when she was young." },
+  { before:"Nosotros", answer:"podíamos", after:"terminar el trabajo en una hora.", hint:"poder (to be able to)", tag:"irreg", translation:"We used to be able to finish the work in an hour." },
+  { before:"Ellos", answer:"podían", after:"ver el volcán desde su casa.", hint:"poder (to be able to)", tag:"irreg", translation:"They used to be able to see the volcano from their house." },
+  { before:"Él", answer:"podía", after:"cargar cosas muy pesadas.", hint:"poder (to be able to)", tag:"irreg", translation:"He used to be able to carry very heavy things." },
+  { before:"Yo", answer:"sabía", after:"los nombres de todas las plantas del jardín.", hint:"saber (to know)", tag:"irreg", translation:"I used to know the names of all the plants in the garden." },
+  { before:"Tú", answer:"sabías", after:"cocinar desde los doce años.", hint:"saber (to know how)", tag:"irreg", translation:"You used to know how to cook from the age of twelve." },
+  { before:"Ella", answer:"sabía", after:"exactamente qué decir en cada momento.", hint:"saber (to know)", tag:"irreg", translation:"She always used to know exactly what to say." },
+  { before:"Nosotros", answer:"sabíamos", after:"el camino de memoria.", hint:"saber (to know)", tag:"irreg", translation:"We used to know the way by heart." },
+  { before:"Ellos", answer:"sabían", after:"tocar música por oído.", hint:"saber (to know how)", tag:"irreg", translation:"They used to be able to play music by ear." },
+  { before:"Él", answer:"sabía", after:"contar chistes mejor que nadie.", hint:"saber (to know how)", tag:"irreg", translation:"He used to know how to tell jokes better than anyone." },
+  { before:"Yo", answer:"veía", after:"las telenovelas con mi abuela.", hint:"ver (to watch)", tag:"irreg", translation:"I used to watch soap operas with my grandmother." },
+  { before:"Tú", answer:"veías", after:"el partido en el bar de la esquina.", hint:"ver (to watch)", tag:"irreg", translation:"You used to watch the match at the corner bar." },
+  { before:"Ella", answer:"veía", after:"amanecer cada vez que no dormía.", hint:"ver (to see)", tag:"irreg", translation:"She used to watch the sunrise every time she couldn't sleep." },
+  { before:"Nosotros", answer:"veíamos", after:"las estrellas desde el rancho.", hint:"ver (to see)", tag:"irreg", translation:"We used to see the stars from the ranch." },
+  { before:"Ellos", answer:"veían", after:"a sus abuelos una vez por semana.", hint:"ver (to see)", tag:"irreg", translation:"They used to see their grandparents once a week." },
+  { before:"Él", answer:"veía", after:"todo con mucho optimismo.", hint:"ver (to see/view)", tag:"irreg", translation:"He used to see everything with great optimism." },
+  { before:"Yo", answer:"venía", after:"aquí seguido cuando vivía cerca.", hint:"venir (to come)", tag:"irreg", translation:"I used to come here often when I lived nearby." },
+  { before:"Tú", answer:"venías", after:"a cenar los jueves sin falta.", hint:"venir (to come)", tag:"irreg", translation:"You used to come for dinner every Thursday without fail." },
+  { before:"Ella", answer:"venía", after:"de muy lejos a comprar en este mercado.", hint:"venir (to come)", tag:"irreg", translation:"She used to come from far away to shop at this market." },
+  { before:"Nosotros", answer:"veníamos", after:"en bicicleta desde el otro lado del pueblo.", hint:"venir (to come)", tag:"irreg", translation:"We used to come by bike from the other side of the village." },
+  { before:"Ellos", answer:"venían", after:"a visitarnos cada Navidad.", hint:"venir (to come)", tag:"irreg", translation:"They used to come and visit us every Christmas." },
+  { before:"Él", answer:"venía", after:"a pie desde la colonia vecina.", hint:"venir (to come)", tag:"irreg", translation:"He used to walk from the neighbouring district." },
+
+  // Decir, hacer, poner, traer (imperfecto)
+  { before:"Yo", answer:"decía", after:"lo que pensaba sin filtros.", hint:"decir (to say)", tag:"irreg", translation:"I used to say what I thought without holding back." },
+  { before:"Tú", answer:"decías", after:"siempre la verdad.", hint:"decir (to say)", tag:"irreg", translation:"You always used to tell the truth." },
+  { before:"Ella", answer:"decía", after:"que el mole era mejor con chocolate.", hint:"decir (to say)", tag:"irreg", translation:"She used to say that mole was better with chocolate." },
+  { before:"Nosotros", answer:"decíamos", after:"adiós desde la ventana.", hint:"decir (to say)", tag:"irreg", translation:"We used to say goodbye from the window." },
+  { before:"Ellos", answer:"decían", after:"que sí a todo para no pelear.", hint:"decir (to say)", tag:"irreg", translation:"They used to say yes to everything to avoid arguing." },
+  { before:"Él", answer:"decía", after:"refranes en lugar de consejos.", hint:"decir (to say)", tag:"irreg", translation:"He used to say proverbs instead of giving advice." },
+  { before:"Yo", answer:"hacía", after:"ejercicio cada mañana.", hint:"hacer (to do)", tag:"irreg", translation:"I used to exercise every morning." },
+  { before:"Tú", answer:"hacías", after:"los mejores tamales del barrio.", hint:"hacer (to make)", tag:"irreg", translation:"You used to make the best tamales in the neighbourhood." },
+  { before:"Ella", answer:"hacía", after:"la tarea en cuanto llegaba de la escuela.", hint:"hacer (to do)", tag:"irreg", translation:"She used to do her homework as soon as she got home from school." },
+  { before:"Nosotros", answer:"hacíamos", after:"fogatas en el rancho los fines de semana.", hint:"hacer (to make)", tag:"irreg", translation:"We used to make bonfires at the ranch at weekends." },
+  { before:"Ellos", answer:"hacían", after:"piñatas para cada posada.", hint:"hacer (to make)", tag:"irreg", translation:"They used to make piñatas for each posada." },
+  { before:"Él", answer:"hacía", after:"lo imposible para llegar puntual.", hint:"hacer (to do)", tag:"irreg", translation:"He used to do the impossible to arrive on time." },
+  { before:"Yo", answer:"ponía", after:"música norteña mientras cocinaba.", hint:"poner (to put on)", tag:"irreg", translation:"I used to put on norteño music while cooking." },
+  { before:"Tú", answer:"ponías", after:"demasiado chile a todo.", hint:"poner (to put)", tag:"irreg", translation:"You used to put too much chilli in everything." },
+  { before:"Ella", answer:"ponía", after:"flores en cada rincón de la casa.", hint:"poner (to put)", tag:"irreg", translation:"She used to put flowers in every corner of the house." },
+  { before:"Nosotros", answer:"poníamos", after:"el altar de muertos cada año.", hint:"poner (to put up)", tag:"irreg", translation:"We used to put up the Day of the Dead altar every year." },
+  { before:"Ellos", answer:"ponían", after:"la tele de fondo para cenar.", hint:"poner (to put on)", tag:"irreg", translation:"They used to put the TV on in the background for dinner." },
+  { before:"Él", answer:"ponía", after:"sus ahorros bajo el colchón.", hint:"poner (to put)", tag:"irreg", translation:"He used to keep his savings under the mattress." },
+  { before:"Yo", answer:"traía", after:"fruta del mercado cada semana.", hint:"traer (to bring)", tag:"irreg", translation:"I used to bring fruit from the market every week." },
+  { before:"Tú", answer:"traías", after:"algo rico cuando visitabas.", hint:"traer (to bring)", tag:"irreg", translation:"You always used to bring something nice when you visited." },
+  { before:"Ella", answer:"traía", after:"recuerdos de sus viajes para todos.", hint:"traer (to bring)", tag:"irreg", translation:"She used to bring souvenirs from her travels for everyone." },
+  { before:"Nosotros", answer:"traíamos", after:"comida para compartir en las reuniones.", hint:"traer (to bring)", tag:"irreg", translation:"We used to bring food to share at get-togethers." },
+  { before:"Ellos", answer:"traían", after:"tamales de su pueblo cuando venían.", hint:"traer (to bring)", tag:"irreg", translation:"They used to bring tamales from their village when they visited." },
+  { before:"Él", answer:"traía", after:"el pan dulce los domingos.", hint:"traer (to bring)", tag:"irreg", translation:"He used to bring sweet bread on Sundays." },
+
+  // Dar, oír, andar (imperfecto)
+  { before:"Yo", answer:"daba", after:"clases de inglés por las tardes.", hint:"dar (to give)", tag:"irreg", translation:"I used to give English lessons in the afternoons." },
+  { before:"Tú", answer:"dabas", after:"buenos consejos sin pedirlos.", hint:"dar (to give)", tag:"irreg", translation:"You used to give good advice without being asked." },
+  { before:"Ella", answer:"daba", after:"propinas generosas siempre.", hint:"dar (to give)", tag:"irreg", translation:"She always used to leave generous tips." },
+  { before:"Nosotros", answer:"dábamos", after:"de comer a los perros de la calle.", hint:"dar (to give)", tag:"irreg", translation:"We used to feed the stray dogs." },
+  { before:"Ellos", answer:"daban", after:"serenata los cumpleaños.", hint:"dar (to give)", tag:"irreg", translation:"They used to sing serenades on birthdays." },
+  { before:"Él", answer:"daba", after:"la vuelta al parque dos veces.", hint:"dar (to take)", tag:"irreg", translation:"He used to do two laps of the park." },
+  { before:"Yo", answer:"oía", after:"el mercado desde mi cuarto.", hint:"oír (to hear)", tag:"irreg", translation:"I used to hear the market from my room." },
+  { before:"Tú", answer:"oías", after:"música todo el día.", hint:"oír (to hear)", tag:"irreg", translation:"You used to listen to music all day." },
+  { before:"Ella", answer:"oía", after:"radio mientras bordaba.", hint:"oír (to hear)", tag:"irreg", translation:"She used to listen to the radio while embroidering." },
+  { before:"Nosotros", answer:"oíamos", after:"los gritos del vendedor de elotes.", hint:"oír (to hear)", tag:"irreg", translation:"We used to hear the corn vendor calling out." },
+  { before:"Ellos", answer:"oían", after:"misa en la radio los domingos.", hint:"oír (to hear)", tag:"irreg", translation:"They used to listen to mass on the radio on Sundays." },
+  { before:"Él", answer:"oía", after:"cuentos de su abuelo antes de dormir.", hint:"oír (to hear)", tag:"irreg", translation:"He used to hear stories from his grandfather before bed." },
+  { before:"Yo", answer:"andaba", after:"descalzo por la playa.", hint:"andar (to walk)", tag:"irreg", translation:"I used to walk barefoot on the beach." },
+  { before:"Tú", answer:"andabas", after:"siempre con un libro en la mano.", hint:"andar (to walk/go around)", tag:"irreg", translation:"You always used to have a book in your hand." },
+  { before:"Ella", answer:"andaba", after:"de aquí para allá todo el día.", hint:"andar (to walk around)", tag:"irreg", translation:"She used to be on the go all day." },
+  { before:"Nosotros", answer:"andábamos", after:"de aventón por el país.", hint:"andar (to travel)", tag:"irreg", translation:"We used to hitchhike around the country." },
+  { before:"Ellos", answer:"andaban", after:"buscando trabajo en otra ciudad.", hint:"andar (to go around)", tag:"irreg", translation:"They used to be looking for work in another city." },
+  { before:"Él", answer:"andaba", after:"solo por las noches.", hint:"andar (to walk)", tag:"irreg", translation:"He used to walk alone at night." },
+
+  // Descriptive/context sentences (more natural imperfecto use)
+  { before:"El cielo", answer:"estaba", after:"lleno de estrellas aquella noche.", hint:"estar (to be)", tag:"irreg", translation:"The sky was full of stars that night." },
+  { before:"La calle", answer:"olía", after:"a comida desde temprano.", hint:"oler (to smell)", tag:"er", translation:"The street used to smell of food from early on." },
+  { before:"Hacía", answer:"mucho calor", after:"cuando llegamos a Mérida.", hint:"hacer (weather)", tag:"irreg", translation:"It was very hot when we arrived in Mérida." },
+  { before:"Llovía", answer:"fuerte", after:"cuando salimos del museo.", hint:"llover (to rain)", tag:"er", translation:"It was raining hard when we left the museum." },
+  { before:"El pueblo", answer:"parecía", after:"sacado de un cuento.", hint:"parecer (to seem)", tag:"er", translation:"The village looked like something out of a fairy tale." },
+  { before:"Los niños", answer:"reían", after:"y corrían por el jardín.", hint:"reír (to laugh)", tag:"ir", translation:"The children were laughing and running around the garden." },
+  { before:"El sol", answer:"brillaba", after:"con fuerza esa tarde.", hint:"brillar (to shine)", tag:"ar", translation:"The sun was shining strongly that afternoon." },
+  { before:"Todos", answer:"esperaban", after:"en silencio.", hint:"esperar (to wait)", tag:"ar", translation:"Everyone was waiting in silence." },
+  { before:"La música", answer:"sonaba", after:"desde el otro lado del parque.", hint:"sonar (to sound/play)", tag:"ar", translation:"The music was playing from the other side of the park." },
+  { before:"Nadie", answer:"hablaba", after:"cuando entró el director.", hint:"hablar (to speak)", tag:"ar", translation:"Nobody was speaking when the headmaster walked in." },
+  { before:"El mercado", answer:"bullía", after:"de gente a esa hora.", hint:"bullir (to bustle)", tag:"ir", translation:"The market was bustling with people at that hour." },
+  { before:"Los colores", answer:"eran", after:"más vivos bajo el sol.", hint:"ser (to be)", tag:"irreg", translation:"The colours were more vivid in the sunlight." },
+  { before:"Todo", answer:"parecía", after:"más lento en el pueblo.", hint:"parecer (to seem)", tag:"er", translation:"Everything seemed slower in the village." },
+  { before:"El aire", answer:"olía", after:"a pino y tierra húmeda.", hint:"oler (to smell)", tag:"er", translation:"The air smelled of pine and damp earth." },
+  { before:"Las campanas", answer:"sonaban", after:"a lo lejos.", hint:"sonar (to ring)", tag:"ar", translation:"The bells were ringing in the distance." },
+  { before:"Todos los vecinos", answer:"se conocían", after:"de toda la vida.", hint:"conocerse (to know each other)", tag:"er", translation:"All the neighbours had known each other all their lives." },
+  { before:"El río", answer:"bajaba", after:"con mucha fuerza en temporada de lluvias.", hint:"bajar (to flow down)", tag:"ar", translation:"The river used to run very fast in the rainy season." },
+  { before:"Los volcanes", answer:"parecían", after:"enormes desde la carretera.", hint:"parecer (to seem)", tag:"er", translation:"The volcanoes looked enormous from the road." },
+  { before:"La gente", answer:"vivía", after:"de manera más sencilla.", hint:"vivir (to live)", tag:"ir", translation:"People used to live in a simpler way." },
+  { before:"El café", answer:"olía", after:"tan bien que entré sin pensarlo.", hint:"oler (to smell)", tag:"er", translation:"The coffee smelled so good that I went in without thinking." },
+  { before:"Aquel mercado", answer:"tenía", after:"todo lo que pudieras imaginar.", hint:"tener (to have)", tag:"irreg", translation:"That market used to have everything you could imagine." },
+  { before:"La abuela", answer:"sabía", after:"exactamente lo que necesitabas.", hint:"saber (to know)", tag:"irreg", translation:"Grandmother always used to know exactly what you needed." },
+  { before:"Los mangos", answer:"eran", after:"más dulces en esa época del año.", hint:"ser (to be)", tag:"irreg", translation:"The mangoes used to be sweeter at that time of year." },
+  { before:"La plaza", answer:"estaba", after:"llena de palomas cada mañana.", hint:"estar (to be)", tag:"irreg", translation:"The square used to be full of pigeons every morning." },
+  { before:"El tren", answer:"pasaba", after:"dos veces al día por el pueblo.", hint:"pasar (to pass)", tag:"ar", translation:"The train used to pass through the village twice a day." },
+  { before:"Todo el barrio", answer:"se reunía", after:"para la verbena.", hint:"reunirse (to gather)", tag:"ir", translation:"The whole neighbourhood used to gather for the street party." },
+  { before:"Los domingos", answer:"olían", after:"a carnitas desde la madrugada.", hint:"oler (to smell)", tag:"er", translation:"Sundays used to smell of carnitas from the early hours." },
+  { before:"La cantina", answer:"cerraba", after:"tardísimo los viernes.", hint:"cerrar (to close)", tag:"ar", translation:"The cantina used to close very late on Fridays." },
+  { before:"Mi vecino", answer:"tocaba", after:"la trompeta cada tarde.", hint:"tocar (to play)", tag:"ar", translation:"My neighbour used to play the trumpet every afternoon." },
+  { before:"Las golondrinas", answer:"volvían", after:"cada primavera.", hint:"volver (to return)", tag:"er", translation:"The swallows used to return every spring." },,
+{ before:"Yo siempre", answer:"me acordaba", after:"de llamar cuando llegaba.", hint:"acordarse (to remember)", tag:"ar", translation:"I always used to remember to call when I arrived." },
+  { before:"Tú", answer:"te acordabas", after:"de todos los cumpleaños.", hint:"acordarse (to remember)", tag:"ar", translation:"You used to remember everyone's birthdays." },
+  { before:"Ella", answer:"se acordaba", after:"de la letra de todas las canciones.", hint:"acordarse (to remember)", tag:"ar", translation:"She used to remember the lyrics of every song." },
+  { before:"Nosotros", answer:"nos acordábamos", after:"de rezar antes de dormir.", hint:"acordarse (to remember)", tag:"ar", translation:"We used to remember to pray before sleeping." },
+  { before:"Ellos", answer:"se acordaban", after:"de traer algo cuando venían.", hint:"acordarse (to remember)", tag:"ar", translation:"They always used to remember to bring something when they came." },
+  { before:"Yo", answer:"me imaginaba", after:"viajando por el mundo.", hint:"imaginarse (to imagine)", tag:"ar", translation:"I used to imagine myself travelling the world." },
+  { before:"Tú", answer:"te imaginabas", after:"viviendo en la costa.", hint:"imaginarse (to imagine)", tag:"ar", translation:"You used to imagine yourself living on the coast." },
+  { before:"Ella", answer:"se imaginaba", after:"un futuro diferente.", hint:"imaginarse (to imagine)", tag:"ar", translation:"She used to imagine a different future." },
+  { before:"Nosotros", answer:"nos imaginábamos", after:"juntos para siempre.", hint:"imaginarse (to imagine)", tag:"ar", translation:"We used to imagine ourselves together forever." },
+  { before:"Yo", answer:"me olvidaba", after:"del tiempo cuando leía.", hint:"olvidarse (to forget)", tag:"ar", translation:"I used to lose track of time when reading." },
+  { before:"Tú", answer:"te olvidabas", after:"de todo con un buen libro.", hint:"olvidarse (to forget)", tag:"ar", translation:"You used to forget everything with a good book." },
+  { before:"Ella", answer:"se olvidaba", after:"las llaves casi siempre.", hint:"olvidarse (to forget)", tag:"ar", translation:"She almost always used to forget her keys." },
+  { before:"Yo", answer:"me preparaba", after:"largo rato antes de salir.", hint:"prepararse (to get ready)", tag:"ar", translation:"I used to take a long time getting ready before going out." },
+  { before:"Tú", answer:"te preparabas", after:"muy rápido para ir al trabajo.", hint:"prepararse (to get ready)", tag:"ar", translation:"You used to get ready very quickly for work." },
+  { before:"Él", answer:"se preparaba", after:"una semana antes del viaje.", hint:"prepararse (to prepare)", tag:"ar", translation:"He used to prepare a whole week before the trip." },
+  { before:"Nosotros", answer:"nos preparábamos", after:"juntos para los exámenes.", hint:"prepararse (to prepare)", tag:"ar", translation:"We used to prepare for exams together." },
+  { before:"Yo", answer:"me enamoraba", after:"de los lugares con historia.", hint:"enamorarse (to fall in love)", tag:"ar", translation:"I used to fall in love with places with history." },
+  { before:"Tú", answer:"te enamorabas", after:"fácilmente.", hint:"enamorarse (to fall in love)", tag:"ar", translation:"You used to fall in love easily." },
+  { before:"Ella", answer:"se enamoraba", after:"cada verano de alguien nuevo.", hint:"enamorarse (to fall in love)", tag:"ar", translation:"She used to fall in love with someone new every summer." },
+  { before:"Yo", answer:"me cansaba", after:"de las mismas rutinas.", hint:"cansarse (to get tired)", tag:"ar", translation:"I used to get tired of the same routines." },
+  { before:"Tú", answer:"te cansabas", after:"pronto cuando hacía calor.", hint:"cansarse (to get tired)", tag:"ar", translation:"You used to tire quickly when it was hot." },
+  { before:"Él", answer:"se cansaba", after:"de esperar y se iba.", hint:"cansarse (to get tired)", tag:"ar", translation:"He used to get tired of waiting and leave." },
+  { before:"Nosotros", answer:"nos cansábamos", after:"pero nunca parábamos.", hint:"cansarse (to get tired)", tag:"ar", translation:"We used to get tired but never stopped." },
+  { before:"Yo", answer:"me asustaba", after:"con las tormentas.", hint:"asustarse (to get scared)", tag:"ar", translation:"I used to get scared of storms." },
+  { before:"Tú", answer:"te asustabas", after:"con las películas de terror.", hint:"asustarse (to get scared)", tag:"ar", translation:"You used to get scared watching horror films." },
+  { before:"Él", answer:"se asustaba", after:"de los perros grandes.", hint:"asustarse (to get scared)", tag:"ar", translation:"He used to be scared of big dogs." },
+  { before:"Nosotros", answer:"nos asustábamos", after:"con los truenos.", hint:"asustarse (to get scared)", tag:"ar", translation:"We used to get scared by thunder." },
+  { before:"Yo", answer:"me alegraba", after:"de ver a mis primos.", hint:"alegrarse (to be glad)", tag:"ar", translation:"I used to be glad to see my cousins." },
+  { before:"Tú", answer:"te alegraban", after:"las sorpresas.", hint:"alegrarse (to be glad)", tag:"ar", translation:"Surprises used to make you happy." },
+  { before:"Ella", answer:"se alegraba", after:"de cualquier pequeña cosa.", hint:"alegrarse (to be glad)", tag:"ar", translation:"She used to be cheered up by any little thing." },
+  { before:"Yo", answer:"me aburrí", after:"si no había algo que leer.", hint:"aburrirse (to get bored)", tag:"er", translation:"I used to get bored if there was nothing to read." },
+  { before:"Tú", answer:"te aburres", after:"de las reuniones largas.", hint:"aburrirse (to get bored)", tag:"er", translation:"You used to get bored in long meetings." },
+  { before:"Yo", answer:"me ponía", after:"nervioso antes de hablar en público.", hint:"ponerse (to become)", tag:"irreg", translation:"I used to get nervous before speaking in public." },
+  { before:"Tú", answer:"te ponías", after:"muy rojo cuando te saludaban.", hint:"ponerse (to become)", tag:"irreg", translation:"You used to go very red when people greeted you." },
+  { before:"Ella", answer:"se ponía", after:"triste con las despedidas.", hint:"ponerse (to become)", tag:"irreg", translation:"She used to get sad at goodbyes." },
+  { before:"Nosotros", answer:"nos poníamos", after:"felices con los días de campo.", hint:"ponerse (to become)", tag:"irreg", translation:"We used to be happy on days out in the countryside." },
+  { before:"Ellos", answer:"se ponían", after:"de acuerdo sin discutir.", hint:"ponerse (to become)", tag:"irreg", translation:"They used to reach agreement without arguing." },
+  { before:"Él", answer:"se ponía", after:"serio cuando hablaba del trabajo.", hint:"ponerse (to become)", tag:"irreg", translation:"He used to become serious when talking about work." },
+  { before:"Yo", answer:"me volvía", after:"loco buscando las llaves.", hint:"volverse (to become)", tag:"er", translation:"I used to go mad looking for my keys." },
+  { before:"Tú", answer:"te volvías", after:"más tranquilo en la naturaleza.", hint:"volverse (to become)", tag:"er", translation:"You used to become calmer in nature." },
+  { before:"Ella", answer:"se volvía", after:"más creativa por las noches.", hint:"volverse (to become)", tag:"er", translation:"She used to become more creative at night." },
+  { before:"Nosotros", answer:"nos volvíamos", after:"niños otra vez en la feria.", hint:"volverse (to become)", tag:"er", translation:"We used to become children again at the fair." },
+  { before:"Yo", answer:"me sentía", after:"bien cuando ayudaba a alguien.", hint:"sentirse (to feel)", tag:"ir", translation:"I used to feel good when I helped someone." },
+  { before:"Tú", answer:"te sentías", after:"en casa en cualquier lugar.", hint:"sentirse (to feel)", tag:"ir", translation:"You used to feel at home anywhere." },
+  { before:"Ella", answer:"se sentía", after:"feliz con poco.", hint:"sentirse (to feel)", tag:"ir", translation:"She used to feel happy with very little." },
+  { before:"Nosotros", answer:"nos sentíamos", after:"afortunados de vivir ahí.", hint:"sentirse (to feel)", tag:"ir", translation:"We used to feel lucky to live there." },
+  { before:"Ellos", answer:"se sentían", after:"solos los domingos por la tarde.", hint:"sentirse (to feel)", tag:"ir", translation:"They used to feel lonely on Sunday afternoons." },
+  { before:"Él", answer:"se sentía", after:"orgulloso de su trabajo.", hint:"sentirse (to feel)", tag:"ir", translation:"He used to feel proud of his work." },
+  { before:"Yo", answer:"me divertía", after:"explorando mercados nuevos.", hint:"divertirse (to have fun)", tag:"ir", translation:"I used to enjoy exploring new markets." },
+  { before:"Tú", answer:"te divertías", after:"con los juegos de mesa.", hint:"divertirse (to have fun)", tag:"ir", translation:"You used to enjoy board games." },
+  { before:"Él", answer:"se divertía", after:"solo con una pelota.", hint:"divertirse (to have fun)", tag:"ir", translation:"He used to have fun with just a ball." },
+  { before:"Nosotros", answer:"nos divertíamos", after:"muchísimo en los cumpleaños.", hint:"divertirse (to have fun)", tag:"ir", translation:"We used to have a great time at birthday parties." },
+  { before:"Yo", answer:"me despertaba", after:"con el olor del café.", hint:"despertarse (to wake up)", tag:"ar", translation:"I used to wake up to the smell of coffee." },
+  { before:"Tú", answer:"te despertabas", after:"de buen humor siempre.", hint:"despertarse (to wake up)", tag:"ar", translation:"You always used to wake up in a good mood." },
+  { before:"Él", answer:"se despertaba", after:"antes del amanecer.", hint:"despertarse (to wake up)", tag:"ar", translation:"He used to wake up before dawn." },
+  { before:"Nosotros", answer:"nos despertábamos", after:"con los pájaros.", hint:"despertarse (to wake up)", tag:"ar", translation:"We used to wake up with the birds." },
+  { before:"Ellos", answer:"se despertaban", after:"tarde los domingos.", hint:"despertarse (to wake up)", tag:"ar", translation:"They used to wake up late on Sundays." },
+  { before:"Ella", answer:"se despertaba", after:"con la luz del sol.", hint:"despertarse (to wake up)", tag:"ar", translation:"She used to wake up with the sunlight." },
+  { before:"Yo", answer:"me quedaba", after:"horas en la librería.", hint:"quedarse (to stay)", tag:"ar", translation:"I used to spend hours in the bookshop." },
+  { before:"Tú", answer:"te quedabas", after:"a dormir en casa de tus primos.", hint:"quedarse (to stay)", tag:"ar", translation:"You used to sleep over at your cousins' house." },
+  { before:"Él", answer:"se quedaba", after:"trabajando hasta muy tarde.", hint:"quedarse (to stay)", tag:"ar", translation:"He used to stay working very late." },
+  { before:"Nosotros", answer:"nos quedábamos", after:"charlando hasta la madrugada.", hint:"quedarse (to stay)", tag:"ar", translation:"We used to stay chatting until the early hours." },
+  { before:"Ella", answer:"se quedaba", after:"en silencio cuando estaba enojada.", hint:"quedarse (to stay)", tag:"ar", translation:"She used to go quiet when she was angry." },
+  { before:"Yo", answer:"me acostumbraba", after:"rápido a cada nuevo lugar.", hint:"acostumbrarse (to get used to)", tag:"ar", translation:"I used to get used to each new place quickly." },
+  { before:"Tú", answer:"te acostumbrabas", after:"al frío más fácil que yo.", hint:"acostumbrarse (to get used to)", tag:"ar", translation:"You used to get used to the cold more easily than me." },
+  { before:"Él", answer:"se acostumbraba", after:"a los horarios de trabajo extraños.", hint:"acostumbrarse (to get used to)", tag:"ar", translation:"He used to get used to strange work schedules." },
+  { before:"Nosotros", answer:"nos acostumbrábamos", after:"a todo con el tiempo.", hint:"acostumbrarse (to get used to)", tag:"ar", translation:"We used to get used to everything over time." },
+  { before:"Ella", answer:"se acostumbraba", after:"a las costumbres locales enseguida.", hint:"acostumbrarse (to get used to)", tag:"ar", translation:"She used to adapt to local customs straight away." },
+  { before:"Yo", answer:"me llevaba", after:"muy bien con mis vecinos.", hint:"llevarse (to get along)", tag:"ar", translation:"I used to get on very well with my neighbours." },
+  { before:"Tú", answer:"te llevabas", after:"bien con todo el mundo.", hint:"llevarse (to get along)", tag:"ar", translation:"You used to get on well with everyone." },
+  { before:"Él", answer:"se llevaba", after:"mal con su jefe.", hint:"llevarse (to get along)", tag:"ar", translation:"He used to have a bad relationship with his boss." },
+  { before:"Nosotros", answer:"nos llevábamos", after:"de maravilla cuando niños.", hint:"llevarse (to get along)", tag:"ar", translation:"We used to get on wonderfully as children." },
+  { before:"Ella", answer:"se llevaba", after:"muy bien con los animales.", hint:"llevarse (to get along)", tag:"ar", translation:"She used to get on very well with animals." },
+  { before:"Yo", answer:"me entretenía", after:"viendo pasar gente.", hint:"entretenerse (to entertain oneself)", tag:"er", translation:"I used to entertain myself watching people walk by." },
+  { before:"Tú", answer:"te entretenías", after:"con los acertijos del periódico.", hint:"entretenerse (to entertain oneself)", tag:"er", translation:"You used to entertain yourself with the newspaper puzzles." },
+  { before:"Él", answer:"se entretenía", after:"armando modelos de aviones.", hint:"entretenerse (to entertain oneself)", tag:"er", translation:"He used to entertain himself building model aeroplanes." },
+  { before:"Nosotros", answer:"nos entreteníamos", after:"con juegos de cartas.", hint:"entretenerse (to entertain oneself)", tag:"er", translation:"We used to entertain ourselves with card games." },
+  { before:"Yo", answer:"me metía", after:"en la cocina a espiar.", hint:"meterse (to get into)", tag:"er", translation:"I used to sneak into the kitchen to spy." },
+  { before:"Tú", answer:"te metías", after:"en problemas seguido.", hint:"meterse (to get into)", tag:"er", translation:"You used to get into trouble often." },
+  { before:"Él", answer:"se metía", after:"en todo lo que no era asunto suyo.", hint:"meterse (to get into)", tag:"er", translation:"He used to get involved in everything that wasn't his business." },
+  { before:"Nosotros", answer:"nos metíamos", after:"al agua sin pensarlo.", hint:"meterse (to get in)", tag:"er", translation:"We used to jump in the water without thinking." },
+  { before:"Yo", answer:"me perdía", after:"en los mercados grandes.", hint:"perderse (to get lost)", tag:"er", translation:"I used to get lost in big markets." },
+  { before:"Tú", answer:"te perdías", after:"de camino a cualquier lugar nuevo.", hint:"perderse (to get lost)", tag:"er", translation:"You used to get lost on the way to any new place." },
+  { before:"Él", answer:"se perdía", after:"en sus pensamientos.", hint:"perderse (to get lost)", tag:"er", translation:"He used to get lost in his thoughts." },
+  { before:"Nosotros", answer:"nos perdíamos", after:"en el barrio nuevo.", hint:"perderse (to get lost)", tag:"er", translation:"We used to get lost in the new neighbourhood." },
+  { before:"Yo", answer:"me dormía", after:"viendo la tele por las noches.", hint:"dormirse (to fall asleep)", tag:"ir", translation:"I used to fall asleep watching TV at night." },
+  { before:"Tú", answer:"te dormías", after:"antes que nadie en los viajes.", hint:"dormirse (to fall asleep)", tag:"ir", translation:"You used to fall asleep before anyone else on trips." },
+  { before:"Él", answer:"se dormía", after:"en la silla de su papá.", hint:"dormirse (to fall asleep)", tag:"ir", translation:"He used to fall asleep in his dad's chair." },
+  { before:"Nosotros", answer:"nos dormíamos", after:"escuchando la lluvia.", hint:"dormirse (to fall asleep)", tag:"ir", translation:"We used to fall asleep listening to the rain." },
+  { before:"Ella", answer:"se dormía", after:"con los pies fríos.", hint:"dormirse (to fall asleep)", tag:"ir", translation:"She used to fall asleep with cold feet." },
+  { before:"Yo", answer:"me convertía", after:"en otra persona al bailar.", hint:"convertirse (to become)", tag:"ir", translation:"I used to become a different person when dancing." },
+  { before:"Tú", answer:"te convertías", after:"en el alma de la fiesta.", hint:"convertirse (to become)", tag:"ir", translation:"You used to become the life and soul of the party." },
+  { before:"Él", answer:"se convertía", after:"en jefe sin darse cuenta.", hint:"convertirse (to become)", tag:"ir", translation:"He used to become the leader without realising." },
+  { before:"Nosotros", answer:"nos convertíamos", after:"en turistas en nuestra propia ciudad.", hint:"convertirse (to become)", tag:"ir", translation:"We used to become tourists in our own city." },
+  { before:"El zócalo", answer:"era", after:"el punto de encuentro de todos.", hint:"ser (to be)", tag:"irreg", translation:"The main square used to be everyone's meeting point." },
+  { before:"Aquella tienda", answer:"tenía", after:"el mejor café de la colonia.", hint:"tener (to have)", tag:"irreg", translation:"That shop used to have the best coffee in the neighbourhood." },
+  { before:"Los martes", answer:"había", after:"mercado en la plaza principal.", hint:"haber (there was)", tag:"irreg", translation:"There used to be a market in the main square on Tuesdays." },
+  { before:"Mi abuelo", answer:"sabía", after:"el nombre de cada planta.", hint:"saber (to know)", tag:"irreg", translation:"My grandfather used to know the name of every plant." },
+  { before:"El autobús", answer:"pasaba", after:"cada veinte minutos.", hint:"pasar (to pass)", tag:"ar", translation:"The bus used to come every twenty minutes." },
+  { before:"La gente", answer:"venía", after:"de lejos a probar su mole.", hint:"venir (to come)", tag:"irreg", translation:"People used to come from far away to try her mole." },
+  { before:"Todos", answer:"querían", after:"quedarse un día más.", hint:"querer (to want)", tag:"irreg", translation:"Everyone used to want to stay one more day." },
+  { before:"La abuela", answer:"podía", after:"hacer tortillas con los ojos cerrados.", hint:"poder (to be able to)", tag:"irreg", translation:"Grandmother used to be able to make tortillas with her eyes closed." },
+  { before:"Nadie", answer:"sabía", after:"que iba a cambiar tanto.", hint:"saber (to know)", tag:"irreg", translation:"Nobody used to know it would change so much." },
+  { before:"Esa calle", answer:"olía", after:"a pan recién horneado.", hint:"oler (to smell)", tag:"er", translation:"That street used to smell of freshly baked bread." },
+  { before:"El parque", answer:"estaba", after:"lleno de niños cada tarde.", hint:"estar (to be)", tag:"irreg", translation:"The park used to be full of children every afternoon." },
+  { before:"Las fiestas", answer:"duraban", after:"tres días seguidos.", hint:"durar (to last)", tag:"ar", translation:"The celebrations used to last three days in a row." },
+  { before:"La familia", answer:"se reunía", after:"cada domingo sin falta.", hint:"reunirse (to gather)", tag:"ir", translation:"The family used to get together every Sunday without fail." },
+  { before:"El maestro", answer:"llegaba", after:"siempre antes que todos.", hint:"llegar (to arrive)", tag:"ar", translation:"The teacher always used to arrive before everyone else." },
+  { before:"Las golondrinas", answer:"anidaban", after:"bajo el alero del tejado.", hint:"anidar (to nest)", tag:"ar", translation:"The swallows used to nest under the roof eaves." },
+  { before:"El río", answer:"traía", after:"agua clara en invierno.", hint:"traer (to bring)", tag:"irreg", translation:"The river used to carry clear water in winter." },
+  { before:"Los niños", answer:"dormían", after:"la siesta sin protestar.", hint:"dormir (to sleep)", tag:"ir", translation:"The children used to take their naps without complaining." },
+  { before:"Mi mamá", answer:"ponía", after:"la mesa antes de que llegáramos.", hint:"poner (to set)", tag:"irreg", translation:"My mum used to set the table before we arrived." },
+  { before:"El vecindario", answer:"olía", after:"a chile asado cada noche.", hint:"oler (to smell)", tag:"er", translation:"The neighbourhood used to smell of roasted chilli every evening." },
+  { before:"El señor de los elotes", answer:"pasaba", after:"puntual a las seis.", hint:"pasar (to pass)", tag:"ar", translation:"The corn seller used to come by punctually at six." },
+  { before:"Los estudiantes", answer:"llenaban", after:"el café de chistes y risas.", hint:"llenar (to fill)", tag:"ar", translation:"The students used to fill the café with jokes and laughter." },
+  { before:"Antes", answer:"se viajaba", after:"mucho en tren por México.", hint:"viajar (to travel)", tag:"ar", translation:"People used to travel a lot by train around Mexico." },
+  { before:"La gente mayor", answer:"se sentaba", after:"afuera a platicar al atardecer.", hint:"sentarse (to sit down)", tag:"ar", translation:"Older people used to sit outside chatting at sunset." },
+  { before:"El cielo de Oaxaca", answer:"era", after:"de un azul increíble.", hint:"ser (to be)", tag:"irreg", translation:"The sky over Oaxaca used to be an incredible shade of blue." },
+  { before:"En ese entonces", answer:"había", after:"mucha más confianza entre vecinos.", hint:"haber (there was)", tag:"irreg", translation:"Back then there used to be much more trust between neighbours." },
+  { before:"El mercado de la Merced", answer:"tenía", after:"un olor inconfundible.", hint:"tener (to have)", tag:"irreg", translation:"The Merced market used to have an unmistakeable smell." },
+  { before:"Cuando llovía, todos", answer:"corrían", after:"a poner cubetas.", hint:"correr (to run)", tag:"er", translation:"When it rained, everyone used to run to put out buckets." },
+  { before:"El abuelo siempre", answer:"decía", after:"que el trabajo es la mejor medicina.", hint:"decir (to say)", tag:"irreg", translation:"Grandfather always used to say that work is the best medicine." },
+];
+
+
 const PER_DAY_NEW = 10;
 const TAG_LABELS = { ar:"-ar", er:"-er", ir:"-ir", irreg:"irregular" };
 
-// --- Storage helpers ---
+let activeTab = localStorage.getItem('activeTab') || 'ind';
+
+function getActivePool() { return activeTab === 'ind' ? ALL : ALL_IMP; }
+function ns(key) { return activeTab + '_' + key; }
+
+function setTab(tab) {
+  activeTab = tab;
+  localStorage.setItem('activeTab', tab);
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  stopTimer();
+  exercises = []; current = 0; score = 0; checked = false; results = []; seconds = 0;
+  init();
+}
+
 function getDailySeed() { const d = new Date(); return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(); }
 function seededShuffle(arr, seed) {
   const a=[...arr]; let s=seed;
@@ -623,105 +1124,78 @@ function getTodayKey() { return new Date().toISOString().slice(0,10); }
 function getDateLabel() { return new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"}); }
 function formatTime(s) { return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,"0")}`; }
 
-function loadStreak() { try { return JSON.parse(localStorage.getItem("streak")||"null")||{count:0,lastCompleted:null}; } catch { return {count:0,lastCompleted:null}; } }
-function saveStreak(s) { try { localStorage.setItem("streak",JSON.stringify(s)); } catch {} }
-function loadTodayState() { try { const s=JSON.parse(localStorage.getItem("todayState")||"null"); if(s&&s.dateKey===getTodayKey()) return s; return null; } catch { return null; } }
-function saveTodayState(s) { try { localStorage.setItem("todayState",JSON.stringify(s)); } catch {} }
+function loadStreak() { try { return JSON.parse(localStorage.getItem(ns("streak"))||"null")||{count:0,lastCompleted:null}; } catch { return {count:0,lastCompleted:null}; } }
+function saveStreak(s) { try { localStorage.setItem(ns("streak"),JSON.stringify(s)); } catch {} }
+function loadTodayState() { try { const s=JSON.parse(localStorage.getItem(ns("todayState"))||"null"); if(s&&s.dateKey===getTodayKey()) return s; return null; } catch { return null; } }
+function saveTodayState(s) { try { localStorage.setItem(ns("todayState"),JSON.stringify(s)); } catch {} }
 
-// --- Review pile ---
-// Structure: { [sentenceKey]: { wrongCount, correctStreak, lastSeen } }
-// sentenceKey = before+answer (unique enough)
 function makeKey(ex) { return (ex.before+ex.answer).split(" ").join(""); }
-function loadReviewPile() { try { return JSON.parse(localStorage.getItem("reviewPile")||"{}"); } catch { return {}; } }
-function saveReviewPile(p) { try { localStorage.setItem("reviewPile",JSON.stringify(p)); } catch {} }
+function loadReviewPile() { try { return JSON.parse(localStorage.getItem(ns("reviewPile"))||"{}"); } catch { return {}; } }
+function saveReviewPile(p) { try { localStorage.setItem(ns("reviewPile"),JSON.stringify(p)); } catch {} }
 
 function addToReviewPile(ex) {
-  const pile = loadReviewPile();
-  const k = makeKey(ex);
-  if (pile[k]) {
-    pile[k].wrongCount = (pile[k].wrongCount||0) + 1;
-    pile[k].correctStreak = 0;
-    pile[k].lastSeen = getTodayKey();
-  } else {
-    pile[k] = { wrongCount:1, correctStreak:0, lastSeen:getTodayKey(), ex };
-  }
+  const pile = loadReviewPile(); const k = makeKey(ex);
+  if (pile[k]) { pile[k].wrongCount=(pile[k].wrongCount||0)+1; pile[k].correctStreak=0; pile[k].lastSeen=getTodayKey(); }
+  else { pile[k]={wrongCount:1,correctStreak:0,lastSeen:getTodayKey(),ex}; }
   saveReviewPile(pile);
 }
 
 function markReviewCorrect(ex) {
-  const pile = loadReviewPile();
-  const k = makeKey(ex);
-  if (!pile[k]) return;
-  pile[k].correctStreak = (pile[k].correctStreak||0) + 1;
-  pile[k].lastSeen = getTodayKey();
-  // Remove from pile after 2 consecutive correct answers
-  if (pile[k].correctStreak >= 2) {
-    delete pile[k];
-  }
+  const pile=loadReviewPile(); const k=makeKey(ex);
+  if(!pile[k]) return;
+  pile[k].correctStreak=(pile[k].correctStreak||0)+1;
+  pile[k].lastSeen=getTodayKey();
+  if(pile[k].correctStreak>=2) delete pile[k];
   saveReviewPile(pile);
 }
 
-function getReviewExercises() {
-  const pile = loadReviewPile();
-  return Object.values(pile).map(item => ({ ...item.ex, isReview:true }));
-}
-
+function getReviewExercises() { return Object.values(loadReviewPile()).map(item=>({...item.ex,isReview:true})); }
 function getReviewCount() { return Object.keys(loadReviewPile()).length; }
 
-// --- Build today's exercise list ---
-// Excludes already-seen sentences (from pool) to avoid overlap with review pile
 function buildExerciseList() {
-  const pile = loadReviewPile();
-  const pileKeys = new Set(Object.keys(pile));
-  // Filter pool to exclude sentences already in review pile
-  const freshPool = ALL.filter(ex => !pileKeys.has(makeKey(ex)));
-  // Pick 10 fresh sentences for today using date seed
-  const todayFresh = seededShuffle(freshPool, getDailySeed()).slice(0, PER_DAY_NEW);
-  // Get all review sentences
-  const reviewExs = getReviewExercises();
-  // Interleave: start with a review if any, then alternate new/review
-  // Actually: show all review first (so they never get skipped), then new
-  // Shuffle review pile so it doesn't always appear in same order
-  const shuffledReview = seededShuffle(reviewExs, getDailySeed() + 1);
-  return [...shuffledReview, ...todayFresh];
+  const pile=loadReviewPile(); const pileKeys=new Set(Object.keys(pile));
+  const freshPool=getActivePool().filter(ex=>!pileKeys.has(makeKey(ex)));
+  const todayFresh=seededShuffle(freshPool,getDailySeed()).slice(0,PER_DAY_NEW);
+  const reviewExs=getReviewExercises();
+  const shuffledReview=seededShuffle(reviewExs,getDailySeed()+1);
+  return [...shuffledReview,...todayFresh];
 }
 
-// --- State ---
-let exercises=[], current=0, score=0, checked=false, results=[];
-let seconds=0, timerInterval=null, streak={count:0,lastCompleted:null};
-let newCount=0, reviewCount=0;
+let exercises=[],current=0,score=0,checked=false,results=[];
+let seconds=0,timerInterval=null,streak={count:0,lastCompleted:null};
+let newCount=0,reviewCount=0;
 
-function startTimer() { timerInterval=setInterval(()=>{ seconds++; const el=document.getElementById("timer"); if(el) el.textContent=formatTime(seconds); },1000); }
-function stopTimer() { if(timerInterval){clearInterval(timerInterval);timerInterval=null;} }
+function startTimer(){timerInterval=setInterval(()=>{seconds++;const el=document.getElementById("timer");if(el)el.textContent=formatTime(seconds);},1000);}
+function stopTimer(){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
 
-function init() {
-  streak = loadStreak();
-  const saved = loadTodayState();
-  if (saved && saved.completed) { showDone(saved); return; }
-  exercises = buildExerciseList();
-  reviewCount = exercises.filter(e=>e.isReview).length;
-  newCount = exercises.filter(e=>!e.isReview).length;
-  if (saved) {
-    current=saved.current||0; score=saved.score||0;
-    results=saved.results||[]; seconds=saved.seconds||0;
-  } else {
-    current=0; score=0; results=[]; seconds=0;
-  }
-  startTimer(); render();
+function init(){
+  streak=loadStreak();
+  const saved=loadTodayState();
+  if(saved&&saved.completed){showDone(saved);return;}
+  exercises=buildExerciseList();
+  reviewCount=exercises.filter(e=>e.isReview).length;
+  newCount=exercises.filter(e=>!e.isReview).length;
+  if(saved){current=saved.current||0;score=saved.score||0;results=saved.results||[];seconds=saved.seconds||0;}
+  else{current=0;score=0;results=[];seconds=0;}
+  startTimer();render();
 }
 
-function render() {
-  const c = exercises[current];
-  const isReview = !!c.isReview;
-  const totalDone = current;
-  const totalEx = exercises.length;
-  const pct = (totalDone/totalEx)*100;
-  const sl = streak.count>0 ? `${streak.count} day streak \uD83D\uDD25` : "No streak yet";
-  const rCount = getReviewCount();
-  const reviewBadgeClass = rCount>0 ? "badge review-badge" : "badge review-badge empty";
-  const reviewBadgeText = rCount>0 ? `\uD83D\uDCCB ${rCount} to review` : "\u2705 Review pile empty";
+function getTenseLabel() {
+  return activeTab==='ind'
+    ? '<em>Pret. Indefinido</em>'
+    : '<em>Pret. Imperfecto</em>';
+}
 
-  document.getElementById("app").innerHTML = `
+function render(){
+  const c=exercises[current];
+  const isReview=!!c.isReview;
+  const pct=(current/exercises.length)*100;
+  const sl=streak.count>0?`${streak.count} day streak \uD83D\uDD25`:"No streak yet";
+  const rCount=getReviewCount();
+  const reviewBadgeClass=rCount>0?"badge review-badge":"badge review-badge empty";
+  const reviewBadgeText=rCount>0?`\uD83D\uDCCB ${rCount} to review`:"\u2705 Review pile empty";
+
+  document.getElementById("app").innerHTML=`
     <div class="meta-row">
       <span class="badge streak-badge">${sl}</span>
       <span class="${reviewBadgeClass}">${reviewBadgeText}</span>
@@ -736,8 +1210,8 @@ function render() {
     </div>
     <div class="card ${isReview?"is-review":""}">
       <div class="q-count">
-        ${getDateLabel()} &middot; ${current+1} of ${totalEx}
-        ${isReview ? "<span class=\"review-pill\">\uD83D\uDD04 Review</span>" : ""}
+        ${getDateLabel()} &middot; ${current+1} of ${exercises.length}
+        ${isReview?"<span class=\"review-pill\">\uD83D\uDD04 Review</span>":""}
       </div>
       <div class="hint-row">Fill in: <strong>${c.hint}</strong> <span class="tag tag-${c.tag}">${TAG_LABELS[c.tag]}</span></div>
       <div class="sentence">
@@ -754,106 +1228,94 @@ function render() {
     </div>
     <div class="score-row" id="sc">Score: <span>${score}</span> / ${current}</div>
   `;
-  const inp = document.getElementById("inp");
-  inp.addEventListener("keydown", e=>{ if(e.key==="Enter") check(); });
-  inp.focus(); checked=false;
+  const inp=document.getElementById("inp");
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter")check();});
+  inp.focus();checked=false;
 }
 
-function check() {
-  if (checked) return;
-  const c = exercises[current];
-  const inp = document.getElementById("inp");
-  const val = inp.value.trim().toLowerCase();
-  checked = true;
-  const ok = val.toLowerCase() === c.answer.toLowerCase();
-  inp.classList.add(ok?"correct":"wrong"); inp.disabled=true;
-  const fb = document.getElementById("fb");
-  const trEl = document.getElementById("tr"); if (trEl && c.translation) { trEl.innerHTML = `<span>${c.translation}</span>`; trEl.classList.add("visible"); }
+function showTranslation(c){
+  const trEl=document.getElementById("tr");
+  if(trEl&&c.translation){trEl.innerHTML=`<span>${c.translation}</span>`;trEl.classList.add("visible");}
+}
 
-  if (ok) {
-    score++;
-    fb.className="feedback correct";
-    if (c.isReview) {
+function check(){
+  if(checked)return;
+  const c=exercises[current];
+  const inp=document.getElementById("inp");
+  const val=inp.value.trim().toLowerCase();
+  checked=true;
+  const ok=val.toLowerCase()===c.answer.toLowerCase();
+  inp.classList.add(ok?"correct":"wrong");inp.disabled=true;
+  const fb=document.getElementById("fb");
+  showTranslation(c);
+  if(ok){
+    score++;fb.className="feedback correct";
+    if(c.isReview){
       markReviewCorrect(c);
-      const remaining = getReviewCount();
-      fb.textContent = remaining===0
-        ? "\u00a1Correcto! Removed from review pile \u2705"
-        : "\u00a1Correcto! One step closer to clearing review \u2705";
-    } else {
-      fb.textContent = "\u00a1Correcto! \u2713";
-    }
+      const remaining=getReviewCount();
+      fb.textContent=remaining===0?"\u00a1Correcto! Removed from review pile \u2705":"\u00a1Correcto! One step closer to clearing review \u2705";
+    } else {fb.textContent="\u00a1Correcto! \u2713";}
   } else {
     fb.className="feedback wrong";
-    if (c.isReview) {
-      addToReviewPile(c);
-      fb.textContent = `Not quite \u2014 the answer is: ${c.answer}. Staying in review pile.`;
-    } else {
-      addToReviewPile(c);
-      fb.textContent = `Not quite \u2014 the answer is: ${c.answer}. Added to review pile.`;
-    }
+    addToReviewPile(c);
+    fb.textContent=c.isReview?`Not quite \u2014 ${c.answer}. Staying in review pile.`:`Not quite \u2014 ${c.answer}. Added to review pile.`;
   }
-
-  results.push({correct:ok, answer:c.answer, given:val, isReview:!!c.isReview});
+  results.push({correct:ok,answer:c.answer,given:val,isReview:!!c.isReview});
   document.getElementById("sc").innerHTML=`Score: <span>${score}</span> / ${current+1}`;
   document.getElementById("btns").innerHTML=`<button class="primary" onclick="next()">${current+1<exercises.length?"Next \u2192":"See results \u2192"}</button>`;
   saveTodayState({dateKey:getTodayKey(),current:current+1,score,results,seconds,completed:false});
 }
 
-function skip() {
-  if (checked) return;
-  const c = exercises[current];
-  const inp = document.getElementById("inp");
-  checked=true; inp.value=c.answer; inp.classList.add("wrong"); inp.disabled=true;
-  const fb = document.getElementById("fb");
-  const trEl2 = document.getElementById("tr"); if (trEl2 && c.translation) { trEl2.innerHTML = `<span>${c.translation}</span>`; trEl2.classList.add("visible"); }
-  fb.className="feedback wrong";
-  fb.textContent=`Answer: ${c.answer}. ${c.isReview?"Staying in review pile.":"Added to review pile."}`;
-  if (c.isReview) { addToReviewPile(c); } else { addToReviewPile(c); }
-  results.push({correct:false, answer:c.answer, given:"", isReview:!!c.isReview});
+function skip(){
+  if(checked)return;
+  const c=exercises[current];
+  const inp=document.getElementById("inp");
+  checked=true;inp.value=c.answer;inp.classList.add("wrong");inp.disabled=true;
+  const fb=document.getElementById("fb");
+  showTranslation(c);
+  fb.className="feedback wrong";fb.textContent=`Answer: ${c.answer}. ${c.isReview?"Staying in review pile.":"Added to review pile."}`;
+  addToReviewPile(c);
+  results.push({correct:false,answer:c.answer,given:"",isReview:!!c.isReview});
   document.getElementById("sc").innerHTML=`Score: <span>${score}</span> / ${current+1}`;
   document.getElementById("btns").innerHTML=`<button class="primary" onclick="next()">${current+1<exercises.length?"Next \u2192":"See results \u2192"}</button>`;
   saveTodayState({dateKey:getTodayKey(),current:current+1,score,results,seconds,completed:false});
 }
 
-function next() { current++; if(current>=exercises.length) showSummary(); else render(); }
+function next(){current++;if(current>=exercises.length)showSummary();else render();}
 
-function showSummary() {
+function showSummary(){
   stopTimer();
-  const pct = Math.round((score/exercises.length)*100);
-  const medal = pct===100?"\uD83E\uDD47":pct>=70?"\uD83E\uDD48":"\uD83E\uDD49";
-  const msg = pct===100?"\u00a1Perfecto! Flawless!":pct>=80?"\u00a1Muy bien! Great work!":pct>=60?"\u00a1Bien! Solid effort!":"\u00a1Sigue adelante! Keep going!";
-  const todayKey = getTodayKey();
-  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-  const yKey = yesterday.toISOString().slice(0,10);
-  let newStreak = streak.lastCompleted===yKey ? streak.count+1 : (streak.lastCompleted===todayKey?streak.count:1);
-  saveStreak({count:newStreak, lastCompleted:todayKey});
+  const pct=Math.round((score/exercises.length)*100);
+  const medal=pct===100?"\uD83E\uDD47":pct>=70?"\uD83E\uDD48":"\uD83E\uDD49";
+  const msg=pct===100?"\u00a1Perfecto! Flawless!":pct>=80?"\u00a1Muy bien! Great work!":pct>=60?"\u00a1Bien! Solid effort!":"\u00a1Sigue adelante! Keep going!";
+  const todayKey=getTodayKey();
+  const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+  const yKey=yesterday.toISOString().slice(0,10);
+  let newStreak=streak.lastCompleted===yKey?streak.count+1:(streak.lastCompleted===todayKey?streak.count:1);
+  saveStreak({count:newStreak,lastCompleted:todayKey});
   saveTodayState({dateKey:todayKey,current,score,results,seconds,completed:true});
-
-  const reviewResults = results.filter(r=>r.isReview);
-  const newResults = results.filter(r=>!r.isReview);
-  const reviewCorrect = reviewResults.filter(r=>r.correct).length;
-  const newCorrect = newResults.filter(r=>r.correct).length;
-  const finalPileSize = getReviewCount();
-
-  const dots = results.map(r=>{
-    if(r.isReview) return r.correct?"<span title=\"review\">\uD83D\uDFE1</span>":"<span title=\"review\">\uD83D\uDD34</span>";
+  const reviewResults=results.filter(r=>r.isReview);
+  const newResults=results.filter(r=>!r.isReview);
+  const reviewCorrect=reviewResults.filter(r=>r.correct).length;
+  const newCorrect=newResults.filter(r=>r.correct).length;
+  const finalPileSize=getReviewCount();
+  const dots=results.map(r=>{
+    if(r.isReview)return r.correct?"<span>\uD83D\uDFE1</span>":"<span>\uD83D\uDD34</span>";
     return r.correct?"<span>\u2705</span>":"<span>\u274C</span>";
   }).join("");
-
-  const reviewSection = reviewResults.length>0 ? `
+  const reviewSection=reviewResults.length>0?`
     <div class="review-summary">
       <strong>Review pile</strong>
       ${reviewCorrect}/${reviewResults.length} review sentences correct &middot;
-      ${finalPileSize>0 ? `${finalPileSize} sentence${finalPileSize===1?"":"s"} still to review` : "Review pile cleared! \uD83C\uDF89"}
-    </div>` : "";
-
+      ${finalPileSize>0?`${finalPileSize} sentence${finalPileSize===1?"":"s"} still to review`:"Review pile cleared! \uD83C\uDF89"}
+    </div>`:"";
   document.getElementById("app").innerHTML=`
     <div class="summary">
       <div style="font-size:2.5rem;margin-bottom:0.3rem;">${medal}</div>
       <h2>Challenge complete!</h2>
       <div class="big">${score}/${exercises.length}</div>
       <div class="dots">${dots}</div>
-      <div style="font-size:0.72rem;color:var(--ink3);margin-bottom:0.75rem;">\uD83D\uDFE1 = review &nbsp; \u2705 = new correct &nbsp; \u274C = new wrong &nbsp; \uD83D\uDD34 = review wrong</div>
+      <div style="font-size:0.72rem;color:var(--ink3);margin-bottom:0.75rem;">\uD83D\uDFE1 review correct &nbsp; \uD83D\uDD34 review wrong &nbsp; \u2705 new correct &nbsp; \u274C new wrong</div>
       ${reviewSection}
       <p>${msg}</p>
       <p class="sub">Time: ${formatTime(seconds)} &middot; ${newStreak} day streak \uD83D\uDD25</p>
@@ -863,10 +1325,10 @@ function showSummary() {
   `;
 }
 
-function showDone(saved) {
-  const finalPileSize = getReviewCount();
-  const dots = (saved.results||[]).map(r=>{
-    if(r.isReview) return r.correct?"<span>\uD83D\uDFE1</span>":"<span>\uD83D\uDD34</span>";
+function showDone(saved){
+  const finalPileSize=getReviewCount();
+  const dots=(saved.results||[]).map(r=>{
+    if(r.isReview)return r.correct?"<span>\uD83D\uDFE1</span>":"<span>\uD83D\uDD34</span>";
     return r.correct?"<span>\u2705</span>":"<span>\u274C</span>";
   }).join("");
   document.getElementById("app").innerHTML=`
@@ -876,26 +1338,37 @@ function showDone(saved) {
       <div class="big">${saved.score}/${saved.results?saved.results.length:PER_DAY_NEW}</div>
       <div style="font-size:1.2rem;margin:0.75rem 0;letter-spacing:2px;line-height:1.8;">${dots}</div>
       <p>Time: ${formatTime(saved.seconds||0)}</p>
-      ${finalPileSize>0?`<p style="color:var(--amber);font-weight:500;">${finalPileSize} sentence${finalPileSize===1?"":"s"} in your review pile for tomorrow.</p>`:"<p style=\"color:var(--green);font-weight:500;\">Review pile clear! \u2705</p>"}
+      ${finalPileSize>0?`<p style="color:var(--amber);font-weight:500;">${finalPileSize} sentence${finalPileSize===1?"":"s"} in your review pile for tomorrow.</p>`:`<p style="color:var(--green);font-weight:500;">Review pile clear! \u2705</p>`}
       <p style="margin-bottom:1.25rem;">Come back tomorrow for a fresh set.</p>
       <button class="primary" onclick="playAgain()">Practice more today</button>
     </div>
   `;
 }
 
-function playAgain() {
+function playAgain(){
   stopTimer();
-  // For extra practice: pick 10 random fresh sentences (don't affect review pile)
-  const pile = loadReviewPile();
-  const pileKeys = new Set(Object.keys(pile));
-  const freshPool = ALL.filter(ex=>!pileKeys.has(makeKey(ex)));
-  exercises = seededShuffle(freshPool, Date.now()).slice(0, 10);
-  reviewCount=0; newCount=exercises.length;
-  current=0; score=0; results=[]; seconds=0;
-  startTimer(); render();
+  const pile=loadReviewPile(); const pileKeys=new Set(Object.keys(pile));
+  const freshPool=getActivePool().filter(ex=>!pileKeys.has(makeKey(ex)));
+  exercises=seededShuffle(freshPool,Date.now()).slice(0,10);
+  reviewCount=0;newCount=exercises.length;
+  current=0;score=0;results=[];seconds=0;
+  startTimer();render();
 }
 
-init();
+// Render tab bar then init
+document.addEventListener('DOMContentLoaded', function() {
+  const tabBar = document.getElementById('tab-bar');
+  tabBar.innerHTML = `
+    <button class="tab-btn ${activeTab==='ind'?'active':''}" data-tab="ind" onclick="setTab('ind')">
+      Indefinido <span class="tense-label">completed</span>
+    </button>
+    <button class="tab-btn ${activeTab==='imp'?'active':''}" data-tab="imp" onclick="setTab('imp')">
+      Imperfecto <span class="tense-label">ongoing</span>
+    </button>
+  `;
+  init();
+});
+
 </script>
 </body>
 </html>
