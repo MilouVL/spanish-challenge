@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Daily Spanish Challenge</title>
+  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkRhaWx5IFNwYW5pc2ggQ2hhbGxlbmdlIiwKICAic2hvcnRfbmFtZSI6ICJTcGFuaXNoIiwKICAiZGVzY3JpcHRpb24iOiAiRGFpbHkgTWV4aWNhbiBTcGFuaXNoIHZlcmIgcHJhY3RpY2Ugd2l0aCBzcGFjZWQgcmVwZXRpdGlvbiIsCiAgInN0YXJ0X3VybCI6ICIvc3BhbmlzaC1jaGFsbGVuZ2UvIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjVmMGU4IiwKICAidGhlbWVfY29sb3IiOiAiI2M4NDQwZiIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyByeD0nMjAnIGZpbGw9JyUyM2M4NDQwZicvPjx0ZXh0IHk9Jy45ZW0nIGZvbnQtc2l6ZT0nODAnIHg9JzEwJz7wn4yuPC90ZXh0Pjwvc3ZnPiIsCiAgICAgICJzaXplcyI6ICJhbnkiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIiwKICAgICAgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIgogICAgfQogIF0KfQ==" />
+  <meta name="theme-color" content="#c8440f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Spanish" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
   <style>
 
@@ -1369,6 +1374,16 @@ document.addEventListener('DOMContentLoaded', function() {
   init();
 });
 
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/spanish-challenge/sw.js', {scope: '/spanish-challenge/'})
+      .then(() => console.log('SW registered'))
+      .catch(e => console.warn('SW failed:', e));
+  });
+}
 </script>
 </body>
 </html>
